@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barra — Water Level Simulator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --water-color: #1a8cff;
+    --bg: #060c14;
+    --panel: rgba(10, 20, 35, 0.85);
+    --border: rgba(30, 120, 255, 0.25);
+    --text: #c8dff5;
+    --accent: #1a8cff;
+    --danger: #ff4d4d;
+    --warn: #ffaa00;
+    --safe: #00e5a0;
+    --mono: 'Space Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
+
+  #canvas-container {
+    position: fixed; inset: 0;
+  }
+
+  canvas { display: block; width: 100% !important; height: 100% !important; }
+
+  /* ── UI overlay ───────────────────────────────────────────── */
+  #ui {
+    position: fixed; inset: 0; pointer-events: none;
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    grid-template-rows: auto 1fr;
+    gap: 0;
+    padding: 20px;
+  }
+
+  .panel {
+    pointer-events: all;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 4px;
+    padding: 18px;
+  }
+
+  /* ── Header ───────────────────────────────────────────────── */
+  #header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    border-radius: 4px;
+    padding: 12px 20px;
+    margin-bottom: 14px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+  .logo-text {
+    font-family: var(--display);
+    font-size: 15px; font-weight: 800;
+    color: #fff; letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .logo-sub {
+    font-family: var(--mono);
+    font-size: 10px; color: rgba(200,223,245,.45);
+    letter-spacing: .12em; text-transform: uppercase;
+  }
+
+  .header-stats {
+    display: flex; gap: 28px;
+  }
+  .hstat { text-align: right; }
+  .hstat-label {
+    font-family: var(--mono); font-size: 9px;
+    color: rgba(200,223,245,.4); letter-spacing: .14em; text-transform: uppercase;
+  }
+  .hstat-value {
+    font-family: var(--mono); font-size: 16px; font-weight: 700;
+    color: #fff;
+    transition: color .3s;
+  }
+
+  /* ── Left panel ───────────────────────────────────────────── */
+  #left {
+    grid-column: 1; grid-row: 2;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  .panel-title {
+    font-family: var(--mono); font-size: 9px; font-weight: 700;
+    color: rgba(200,223,245,.35); letter-spacing: .16em; text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Slider ───────────────────────────────────────────────── */
+  .slider-wrap { display: flex; flex-direction: column; gap: 8px; }
+
+  .slider-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .slider-name {
+    font-family: var(--mono); font-size: 11px; color: var(--text);
+  }
+  .slider-val {
+    font-family: var(--mono); font-size: 18px; font-weight: 700; color: #fff;
+    transition: color .3s;
+  }
+  .slider-unit {
+    font-family: var(--mono); font-size: 10px; color: rgba(200,223,245,.4);
+  }
+
+  input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px;
+    background: rgba(26,140,255,.15);
+    border-radius: 2px; outline: none;
+    cursor: pointer;
+    position: relative;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 14px rgba(26,140,255,.7);
+    cursor: grab;
+    transition: transform .15s, box-shadow .15s;
+  }
+  input[type=range]::-webkit-slider-thumb:active {
+    cursor: grabbing; transform: scale(1.2);
+    box-shadow: 0 0 24px rgba(26,140,255,.9);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 50%; border: none;
+    background: var(--accent); box-shadow: 0 0 14px rgba(26,140,255,.7);
+    cursor: grab;
+  }
+
+  .slider-range {
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 9px;
+    color: rgba(200,223,245,.3);
+  }
+
+  /* threshold marks */
+  .threshold-bar {
+    position: relative; height: 24px; margin-top: 4px;
+  }
+  .t-mark {
+    position: absolute; top: 0; width: 2px; height: 12px;
+    border-radius: 1px;
+  }
+  .t-label {
+    position: absolute; top: 14px;
+    font-family: var(--mono); font-size: 8px;
+    transform: translateX(-50%);
+  }
+
+  /* ── Status badge ─────────────────────────────────────────── */
+  .status-badge {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-radius: 3px;
+    border: 1px solid;
+    transition: all .4s;
+  }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .status-text {
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    letter-spacing: .05em;
+    line-height: 1.4;
+  }
+
+  /* ── Metrics grid ─────────────────────────────────────────── */
+  .metrics { display: flex; flex-direction: column; gap: 8px; }
+  .metric-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(30,120,255,.1);
+  }
+  .metric-label {
+    font-family: var(--mono); font-size: 10px;
+    color: rgba(200,223,245,.45); letter-spacing: .08em;
+  }
+  .metric-value {
+    font-family: var(--mono); font-size: 12px; font-weight: 700; color: #fff;
+    transition: color .3s;
+  }
+
+  /* ── Right panel ──────────────────────────────────────────── */
+  #right {
+    grid-column: 3; grid-row: 2;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  /* ── Scenario buttons ─────────────────────────────────────── */
+  .scenario-grid { display: flex; flex-direction: column; gap: 6px; }
+  .scenario-btn {
+    width: 100%; padding: 9px 12px; border-radius: 3px;
+    background: rgba(26,140,255,.07);
+    border: 1px solid rgba(26,140,255,.2);
+    color: var(--text); font-family: var(--mono); font-size: 10px;
+    cursor: pointer; text-align: left;
+    transition: all .2s; letter-spacing: .04em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .scenario-btn:hover {
+    background: rgba(26,140,255,.18); border-color: var(--accent);
+    color: #fff; transform: translateX(2px);
+  }
+  .scenario-btn.active {
+    background: rgba(26,140,255,.22); border-color: var(--accent);
+    color: #fff;
+  }
+  /* ── Tooltip ──────────────────────────────────────────────── */
+  #tooltip {
+    position: fixed; pointer-events: none;
+    background: rgba(6,12,20,.9);
+    border: 1px solid var(--border);
+    border-radius: 3px; padding: 8px 12px;
+    font-family: var(--mono); font-size: 11px; color: var(--text);
+    display: none; z-index: 100;
+  }
+</style>
+</head>
+<body>
+
+<div id="canvas-container">
+  <canvas id="three-canvas"></canvas>
+</div>
+
+<div id="ui">
+  <!-- HEADER -->
+  <div id="header">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="logo-text">Barra</div>
+        <div class="logo-sub">Water Level Simulator</div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="hstat">
+        <div class="hstat-label">Water Elevation</div>
+        <div class="hstat-value" id="hdr-elev">485.0 m</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-label">Surface Area</div>
+        <div class="hstat-value" id="hdr-area">142.3 km²</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-label">Volume</div>
+        <div class="hstat-value" id="hdr-vol">26.4 km³</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-label">Capacity</div>
+        <div class="hstat-value" id="hdr-cap">71%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEFT -->
+  <div id="left">
+    <div class="panel">
+      <div class="panel-title">Water Level Control</div>
+      <div class="slider-wrap">
+        <div class="slider-header">
+          <span class="slider-name">Elevation</span>
+          <span><span class="slider-val" id="elev-val">485</span> <span class="slider-unit">m asl</span></span>
+        </div>
+        <input type="range" id="level-slider" min="420" max="530" value="485" step="0.5">
+        <div class="slider-range"><span id="slider-min-label">420 m</span><span id="slider-max-label">530 m</span></div>
+        <div class="threshold-bar" id="thresh-bar"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Operational Status</div>
+      <div class="status-badge" id="status-badge">
+        <div class="status-dot" id="status-dot"></div>
+        <div class="status-text" id="status-text">Normal Operations</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Computed Metrics</div>
+      <div class="metrics">
+        <div class="metric-row">
+          <span class="metric-label">Freeboard</span>
+          <span class="metric-value" id="m-freeboard">45.0 m</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Days to overflow</span>
+          <span class="metric-value" id="m-days">–</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Flood extent</span>
+          <span class="metric-value" id="m-flood">0 km²</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Downstream risk</span>
+          <span class="metric-value" id="m-risk">Low</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div id="right">
+    <!-- AI FORECAST -->
+    <div class="panel" style="flex:1;overflow-y:auto">
+      <div class="panel-title">AI Forecast</div>
+
+      <div class="slider-wrap">
+        <div class="slider-header">
+          <span class="slider-name">Daily Rainfall</span>
+          <span><span class="slider-val" id="fc-rain-val">20</span> <span class="slider-unit">mm/day</span></span>
+        </div>
+        <input type="range" id="fc-rain" min="0" max="100" step="1" value="20">
+        <div class="slider-range"><span>0</span><span>100 mm</span></div>
+      </div>
+
+      <div class="slider-wrap" style="margin-top:12px">
+        <div class="slider-header">
+          <span class="slider-name">Max Temperature</span>
+          <span><span class="slider-val" id="fc-tmax-val">15</span> <span class="slider-unit">°C</span></span>
+        </div>
+        <input type="range" id="fc-tmax" min="-10" max="40" step="1" value="15">
+        <div class="slider-range"><span>−10</span><span>40 °C</span></div>
+      </div>
+
+      <div class="slider-wrap" style="margin-top:12px">
+        <div class="slider-header">
+          <span class="slider-name">Min Temperature</span>
+          <span><span class="slider-val" id="fc-tmin-val">5</span> <span class="slider-unit">°C</span></span>
+        </div>
+        <input type="range" id="fc-tmin" min="-10" max="40" step="1" value="5">
+        <div class="slider-range"><span>−10</span><span>40 °C</span></div>
+      </div>
+
+      <div class="slider-wrap" style="margin-top:12px">
+        <div class="slider-header">
+          <span class="slider-name">Snowfall</span>
+          <span><span class="slider-val" id="fc-snow-val">0</span> <span class="slider-unit">mm/day</span></span>
+        </div>
+        <input type="range" id="fc-snow" min="0" max="50" step="1" value="0">
+        <div class="slider-range"><span>0</span><span>50 mm</span></div>
+      </div>
+
+      <div class="slider-wrap" style="margin-top:12px">
+        <div class="slider-header">
+          <span class="slider-name">Snow Cover</span>
+          <span><span class="slider-val" id="fc-snowcover-val">20</span> <span class="slider-unit">%</span></span>
+        </div>
+        <input type="range" id="fc-snowcover" min="0" max="100" step="1" value="20">
+        <div class="slider-range"><span>0</span><span>100%</span></div>
+      </div>
+
+      <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:10px">
+        <div class="panel-title" style="margin-bottom:6px">7-Day Projected Inflow</div>
+        <div id="fc-status" style="font-family:var(--mono);font-size:10px;color:rgba(200,223,245,.45);margin-bottom:6px">Adjust sliders to run forecast…</div>
+        <canvas id="fc-chart" width="240" height="100" style="display:none;width:100%"></canvas>
+      </div>
+    </div>
+
+    <!-- SCENE CONTROLS -->
+    <div class="panel">
+      <div class="panel-title">Scene Controls</div>
+      <div class="slider-wrap">
+        <div class="slider-header">
+          <span class="slider-name" style="font-size:10px">Sun Intensity</span>
+          <span><span class="slider-val" id="sun-val" style="font-size:14px">3.5</span></span>
+        </div>
+        <input type="range" id="sun-slider" min="0" max="8" step="0.1" value="3.5">
+      </div>
+      <div class="slider-wrap" style="margin-top:10px">
+        <div class="slider-header">
+          <span class="slider-name" style="font-size:10px">Terrain Scale</span>
+          <span><span class="slider-val" id="terrain-val" style="font-size:14px">40</span><span class="slider-unit">×</span></span>
+        </div>
+        <input type="range" id="terrain-slider" min="5" max="80" step="1" value="40">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="tooltip"></div>
+
+<!-- Three.js from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Chart.js for AI forecast chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- GeoTIFF — parses dem.tif directly in the browser, no Python preprocessing needed -->
+<script src="https://cdn.jsdelivr.net/npm/geotiff@2.0.7/dist-browser/geotiff.js"></script>
+
+<script>
+// ───────────────────────────────────────────────────────────────
+//  THREE.JS SCENE SETUP
+// ───────────────────────────────────────────────────────────────
+const canvas   = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.9;
+
+const scene  = new THREE.Scene();
+scene.fog    = new THREE.FogExp2(0x060c14, 0.004);
+scene.background = new THREE.Color(0x060c14);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2000);
+camera.position.set(0, 120, 200);
+camera.lookAt(0, 30, 0);
+
+// ── Lights
+const ambient = new THREE.AmbientLight(0x1a2a4a, 0.8);
+scene.add(ambient);
+
+const sun = new THREE.DirectionalLight(0xffddb0, 3.5);
+sun.position.set(200, 1200, 100);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.far = 1000;
+sun.shadow.camera.left = sun.shadow.camera.bottom = -200;
+sun.shadow.camera.right = sun.shadow.camera.top = 200;
+scene.add(sun);
+
+const fillLight = new THREE.DirectionalLight(0x4488ff, 0.3);
+fillLight.position.set(-100, 50, -100);
+scene.add(fillLight);
+
+const TERRAIN_SIZE = 300;
+let   TERRAIN_SCALE = 40;   // vertical exaggeration multiplier — live-editable
+let   terrainMeshRef = null; // kept for live terrain-scale updates
+
+// ── Shared terrain material (created here so init() can reference it)
+const terrainMat = new THREE.MeshLambertMaterial({
+  vertexColors: true,
+  side: THREE.FrontSide,
+});
+
+// ───────────────────────────────────────────────────────────────
+//  DEM LOADER  — reads data/dem/dem.tif directly via geotiff.js
+// ───────────────────────────────────────────────────────────────
+async function loadRealDEM() {
+  const response = await fetch("data/dem/dem.tif");
+  const buffer   = await response.arrayBuffer();
+  const tiff     = await GeoTIFF.fromArrayBuffer(buffer);
+  const image    = await tiff.getImage();
+
+  const cols = image.getWidth();    // 374 — E-W columns
+  const rows = image.getHeight();   // 196 — N-S rows
+  const [band] = await image.readRasters();  // Float32Array, row-major, north-first
+
+  // Single-pass min/max — avoids spread-operator stack overflow on large arrays
+  let elev_min = Infinity, elev_max = -Infinity;
+  const heights = new Float32Array(band.length);
+  for (let i = 0; i < band.length; i++) {
+    const v = band[i];
+    if (v > -9000) {
+      heights[i] = v;
+      if (v < elev_min) elev_min = v;
+      if (v > elev_max) elev_max = v;
+    } else {
+      heights[i] = NaN;
+    }
+  }
+  for (let i = 0; i < heights.length; i++) {
+    if (isNaN(heights[i])) heights[i] = elev_min;
+  }
+
+  // Percentile breakpoints for terrain colouring
+  const sorted = Array.from(heights).sort((a, b) => a - b);
+  const pct = p => sorted[Math.floor(sorted.length * p / 100)];
+
+  const dem = {
+    width: cols, height: rows,
+    min: elev_min, max: elev_max,
+    p10: pct(10), p30: pct(30), p60: pct(60), p80: pct(80),
+    dam_crest: 242.0,  // Ogosta crest elevation (m asl)
+    warn_low:  195.0,
+    warn_high: 232.0,
+    heights,
+  };
+
+  // Native DEM resolution (374×196) — no resampling, no distortion.
+  // widthSegments  = cols-1 (E-W / longitude direction)
+  // heightSegments = rows-1 (N-S / latitude direction)
+  // After rotateX(-π/2): row 0 (north) → far +Z, row 195 (south/dam) → near -Z
+  const geo = new THREE.PlaneGeometry(
+    TERRAIN_SIZE, TERRAIN_SIZE,
+    cols - 1, rows - 1
+  );
+  geo.rotateX(-Math.PI / 2);
+
+  const positions = geo.attributes.position;
+  for (let i = 0; i < positions.count; i++) {
+    positions.setY(i, ((heights[i] - elev_min) / (elev_max - elev_min)) * TERRAIN_SCALE);
+  }
+  geo.computeVertexNormals();
+  return { geo, dem };
+}
+
+function colorTerrain(geo, dem) {
+  const positions = geo.attributes.position;
+  const colors = [];
+  for (let i = 0; i < positions.count; i++) {
+    const realElev = dem.heights[i];
+    let r, g, b;
+    if      (realElev < dem.p10) { r=0.12; g=0.22; b=0.32; }
+    else if (realElev < dem.p30) { r=0.18; g=0.30; b=0.20; }
+    else if (realElev < dem.p60) { r=0.25; g=0.38; b=0.22; }
+    else if (realElev < dem.p80) { r=0.45; g=0.40; b=0.30; }
+    else                          { r=0.70; g=0.68; b=0.65; }
+    colors.push(r, g, b);
+  }
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+}
+
+// ── Water plane
+const waterGeo = new THREE.PlaneGeometry(TERRAIN_SIZE * 2, TERRAIN_SIZE * 2, 1, 1);
+waterGeo.rotateX(-Math.PI/2);
+
+const waterMat = new THREE.MeshPhongMaterial({
+  color: 0x1a6bcc,
+  emissive: 0x051525,
+  specular: 0x88ccff,
+  shininess: 90,
+  transparent: true,
+  opacity: 0.72,
+  side: THREE.DoubleSide,
+});
+const waterMesh = new THREE.Mesh(waterGeo, waterMat);
+scene.add(waterMesh);
+
+// ── Flood overlay (downstream)
+const floodGeo = new THREE.PlaneGeometry(TERRAIN_SIZE * 2, TERRAIN_SIZE * 2, 1, 1);
+floodGeo.rotateX(-Math.PI/2);
+const floodMat = new THREE.MeshPhongMaterial({
+  color: 0xff2222,
+  emissive: 0x330000,
+  transparent: true,
+  opacity: 0,
+  side: THREE.DoubleSide,
+});
+const floodMesh = new THREE.Mesh(floodGeo, floodMat);
+scene.add(floodMesh);
+
+// ── Water shimmer animation
+let waveTime = 0;
+
+// ── Dam wall highlight
+const damWallGeo = new THREE.BoxGeometry(55, 6, 10);
+const damWallMat = new THREE.MeshPhongMaterial({ color: 0x8899aa, emissive: 0x223344 });
+const damWall = new THREE.Mesh(damWallGeo, damWallMat);
+damWall.position.set(0, 50, 46);
+damWall.castShadow = true;
+scene.add(damWall);
+
+// ───────────────────────────────────────────────────────────────
+//  ORBIT CONTROLS  (manual, no import needed)
+// ───────────────────────────────────────────────────────────────
+let isDragging = false, isRightDrag = false;
+let prevMouse = {x:0, y:0};
+let spherical = { theta: Math.PI/6, phi: Math.PI/3.5, radius: 260 };
+let target = new THREE.Vector3(0, 25, 10);
+
+function updateCamera() {
+  const x = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta);
+  const y = spherical.radius * Math.cos(spherical.phi);
+  const z = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta);
+  camera.position.set(target.x+x, target.y+y, target.z+z);
+  camera.lookAt(target);
+}
+updateCamera();
+
+canvas.addEventListener('mousedown', e => {
+  isDragging = true;
+  isRightDrag = e.button === 2;
+  prevMouse = {x: e.clientX, y: e.clientY};
+  e.preventDefault();
+});
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+window.addEventListener('mouseup', () => isDragging = false);
+window.addEventListener('mousemove', e => {
+  if(!isDragging) return;
+  const dx = (e.clientX - prevMouse.x) * 0.005;
+  const dy = (e.clientY - prevMouse.y) * 0.005;
+  prevMouse = {x: e.clientX, y: e.clientY};
+  if(isRightDrag) {
+    const right = new THREE.Vector3();
+    camera.getWorldDirection(right);
+    right.cross(camera.up).normalize().multiplyScalar(dx * 30);
+    const up = new THREE.Vector3(0, 1, 0).multiplyScalar(-dy * 30);
+    target.add(right).add(up);
+  } else {
+    spherical.theta -= dx;
+    spherical.phi = Math.max(0.1, Math.min(Math.PI/2.2, spherical.phi + dy));
+  }
+  updateCamera();
+});
+canvas.addEventListener('wheel', e => {
+  spherical.radius = Math.max(60, Math.min(600, spherical.radius + e.deltaY * 0.3));
+  updateCamera(); e.preventDefault();
+}, { passive: false });
+canvas.addEventListener('dblclick', () => {
+  spherical = { theta: Math.PI/6, phi: Math.PI/3.5, radius: 260 };
+  target.set(0, 25, 10);
+  updateCamera();
+});
+
+// ───────────────────────────────────────────────────────────────
+//  WATER LEVEL LOGIC
+// ───────────────────────────────────────────────────────────────
+// Placeholders — all overwritten in init() after DEM loads
+let DAM_CREST = 242;
+let WARN_LOW  = 195;
+let WARN_HIGH = 232;
+let OVERFLOW  = 242;
+let MIN_LEVEL = 150;
+let NORMAL    = 215;
+
+function elevToWorldY(elev) {
+  return ((elev - demData.min) / (demData.max - demData.min)) * TERRAIN_SCALE;
+}
+
+let currentLevel = 485;
+let targetLevel  = 485;
+
+function setWaterLevel(elev, immediate=false) {
+  targetLevel = elev;
+  if(immediate) currentLevel = elev;
+}
+
+function updateWater(elev) {
+  const wy = elevToWorldY(elev);
+  waterMesh.position.y = wy;
+
+  // Ripple / shimmer
+  const wverts = waterMesh.geometry.attributes.position;
+  for(let i=0; i<wverts.count; i++) {
+    const x = wverts.getX(i), z = wverts.getZ(i);
+    wverts.setY(i, Math.sin(x*0.08 + waveTime)*0.35 + Math.cos(z*0.1 + waveTime*0.7)*0.25);
+  }
+  wverts.needsUpdate = true;
+
+  // Flood plane
+  const overflowAmt = Math.max(0, elev - OVERFLOW + 5);
+  if(overflowAmt > 0) {
+    floodMesh.position.y = wy - 2;
+    floodMat.opacity = Math.min(0.45, overflowAmt * 0.04);
+  } else {
+    floodMat.opacity = 0;
+  }
+
+  // Dam wall
+  damWall.position.y = Math.min(wy + 4, 58);
+
+  // Update UI
+  const area = calcArea(elev);
+  const vol  = calcVolume(elev);
+  const cap  = Math.round(((elev - MIN_LEVEL) / (OVERFLOW - MIN_LEVEL)) * 100);
+  const freeboard = OVERFLOW - elev;
+
+  document.getElementById('elev-val').textContent = elev.toFixed(1);
+  document.getElementById('hdr-elev').textContent = elev.toFixed(1) + ' m';
+  document.getElementById('hdr-area').textContent = area.toFixed(1) + ' km²';
+  document.getElementById('hdr-vol').textContent  = vol.toFixed(1) + ' km³';
+  document.getElementById('hdr-cap').textContent  = Math.max(0, Math.min(100, cap)) + '%';
+  document.getElementById('m-freeboard').textContent = freeboard.toFixed(1) + ' m';
+  document.getElementById('m-flood').textContent = overflowAmt > 0 ? (overflowAmt * 2.4).toFixed(1) + ' km²' : '0 km²';
+
+  const daysToOvf = overflowAmt > 0 ? '–' : Math.round(freeboard / 0.12) + ' d';
+  document.getElementById('m-days').textContent = daysToOvf;
+
+  updateStatus(elev, cap);
+}
+
+function calcArea(elev) {
+  const t = (elev - MIN_LEVEL) / (OVERFLOW - MIN_LEVEL);
+  return 30 + t * t * 185;
+}
+function calcVolume(elev) {
+  const t = (elev - MIN_LEVEL) / (OVERFLOW - MIN_LEVEL);
+  return 5 + t * t * t * 55;
+}
+
+// ── Status logic
+let lastStatus = '';
+function updateStatus(elev, cap) {
+  const badge  = document.getElementById('status-badge');
+  const dot    = document.getElementById('status-dot');
+  const text   = document.getElementById('status-text');
+  const mRisk  = document.getElementById('m-risk');
+
+  let status, color, bg, border, risk;
+  if(elev >= OVERFLOW) {
+    status='⚠ OVERFLOW – BREACH RISK'; color='#ff4d4d'; bg='rgba(255,50,50,.08)'; border='rgba(255,50,50,.4)'; risk='CRITICAL';
+  } else if(elev >= WARN_HIGH) {
+    status='⚡ HIGH WATER – MONITORING'; color='#ffaa00'; bg='rgba(255,170,0,.08)'; border='rgba(255,170,0,.4)'; risk='Elevated';
+  } else if(elev <= WARN_LOW) {
+    status='🔵 LOW RESERVOIR – DROUGHT'; color='#ffaa00'; bg='rgba(255,170,0,.08)'; border='rgba(255,170,0,.4)'; risk='Low';
+  } else {
+    status='✓ NORMAL OPERATIONS'; color='#00e5a0'; bg='rgba(0,229,160,.08)'; border='rgba(0,229,160,.35)'; risk='Low';
+  }
+
+  dot.style.background  = color;
+  text.style.color      = color;
+  text.textContent      = status;
+  badge.style.background = bg;
+  badge.style.borderColor = border;
+  mRisk.textContent = risk;
+  mRisk.style.color = color;
+  lastStatus = status;
+}
+
+// ───────────────────────────────────────────────────────────────
+//  CONTROLS
+// ───────────────────────────────────────────────────────────────
+const levelSlider = document.getElementById('level-slider');
+levelSlider.addEventListener('input', e => {
+  const v = parseFloat(e.target.value);
+  setWaterLevel(v, true);
+  updateWater(v);
+});
+
+function animateToLevel(target) {
+  const start   = currentLevel;
+  const dist    = target - start;
+  const dur     = 1800;
+  const t0      = performance.now();
+  function tick(now) {
+    const p = Math.min(1, (now - t0) / dur);
+    const ease = p < 0.5 ? 2*p*p : -1+(4-2*p)*p;
+    const lv = start + dist * ease;
+    currentLevel = lv;
+    levelSlider.value = lv;
+    updateWater(lv);
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ── Sun intensity slider
+document.getElementById('sun-slider').addEventListener('input', e => {
+  const v = parseFloat(e.target.value);
+  sun.intensity = v;
+  document.getElementById('sun-val').textContent = v.toFixed(1);
+});
+
+// ── Terrain scale slider — rebuilds vertex Y positions live
+document.getElementById('terrain-slider').addEventListener('input', e => {
+  TERRAIN_SCALE = parseInt(e.target.value);
+  document.getElementById('terrain-val').textContent = TERRAIN_SCALE;
+  if (!terrainMeshRef || !demData) return;
+  const pos = terrainMeshRef.geometry.attributes.position;
+  const { heights, min, max } = demData;
+  for (let i = 0; i < pos.count; i++) {
+    pos.setY(i, ((heights[i] - min) / (max - min)) * TERRAIN_SCALE);
+  }
+  pos.needsUpdate = true;
+  terrainMeshRef.geometry.computeVertexNormals();
+  // Keep water aligned with new scale
+  updateWater(currentLevel);
+});
+
+// ───────────────────────────────────────────────────────────────
+//  RESIZE
+// ───────────────────────────────────────────────────────────────
+function resize() {
+  const W = window.innerWidth, H = window.innerHeight;
+  renderer.setSize(W, H, false);
+  camera.aspect = W / H;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ───────────────────────────────────────────────────────────────
+//  RENDER LOOP
+// ───────────────────────────────────────────────────────────────
+function animate(t) {
+  requestAnimationFrame(animate);
+  waveTime = t * 0.001;
+
+  // Smooth level interpolation
+  if(Math.abs(currentLevel - targetLevel) > 0.05) {
+    currentLevel += (targetLevel - currentLevel) * 0.06;
+    updateWater(currentLevel);
+  }
+
+  // Water color pulse
+  const pulse = (Math.sin(waveTime * 0.8) + 1) * 0.5;
+  waterMat.emissive.setHex(Math.round(0x051525 + pulse * 0x030808));
+
+  renderer.render(scene, camera);
+}
+
+// ───────────────────────────────────────────────────────────────
+//  AI FORECAST
+// ───────────────────────────────────────────────────────────────
+let fcChart = null;
+let fcDebounce = null;
+
+function bindForecastSlider(id, valId) {
+  const el = document.getElementById(id);
+  const valEl = document.getElementById(valId);
+  el.addEventListener('input', () => { valEl.textContent = el.value; scheduleForecast(); });
+}
+bindForecastSlider('fc-rain',      'fc-rain-val');
+bindForecastSlider('fc-tmax',      'fc-tmax-val');
+bindForecastSlider('fc-tmin',      'fc-tmin-val');
+bindForecastSlider('fc-snow',      'fc-snow-val');
+bindForecastSlider('fc-snowcover', 'fc-snowcover-val');
+
+function scheduleForecast() {
+  clearTimeout(fcDebounce);
+  fcDebounce = setTimeout(runForecast, 500);
+}
+
+async function runForecast() {
+  const payload = {
+    precipitation_sum:  parseFloat(document.getElementById('fc-rain').value),
+    temperature_2m_max: parseFloat(document.getElementById('fc-tmax').value),
+    temperature_2m_min: parseFloat(document.getElementById('fc-tmin').value),
+    snowfall_sum:       parseFloat(document.getElementById('fc-snow').value),
+    snow_cover_pct:     parseFloat(document.getElementById('fc-snowcover').value),
+    forecast_days: 7,
+  };
+  const statusEl = document.getElementById('fc-status');
+  statusEl.textContent = 'Running forecast…';
+
+  try {
+    const res = await fetch('/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    const avg = (data.reduce((s, r) => s + r.predicted_inflow_m3s, 0) / data.length).toFixed(1);
+    statusEl.textContent = `Avg inflow: ${avg} m³/s over 7 days`;
+    renderForecastChart(data);
+    applyForecastToScene(data);
+  } catch (e) {
+    statusEl.textContent = 'Forecast unavailable — start serve.py to enable.';
+    document.getElementById('fc-chart').style.display = 'none';
+    console.warn('AI forecast error:', e);
+  }
+}
+
+function renderForecastChart(data) {
+  const canvas = document.getElementById('fc-chart');
+  canvas.style.display = 'block';
+  const labels = data.map(r => r.date.slice(5));
+  const values = data.map(r => r.predicted_inflow_m3s);
+
+  if (fcChart) {
+    fcChart.data.labels = labels;
+    fcChart.data.datasets[0].data = values;
+    fcChart.update('none');
+    return;
+  }
+
+  fcChart = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Inflow m³/s',
+        data: values,
+        borderColor: '#1a8cff',
+        backgroundColor: 'rgba(26,140,255,0.15)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3,
+        pointBackgroundColor: '#1a8cff',
+      }],
+    },
+    options: {
+      responsive: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(6,12,20,.9)',
+          titleColor: '#c8dff5',
+          bodyColor: '#c8dff5',
+          borderColor: 'rgba(30,120,255,.25)',
+          borderWidth: 1,
+        },
+      },
+      scales: {
+        x: { ticks: { color: 'rgba(200,223,245,.5)', font: { size: 8, family: 'Space Mono, monospace' } }, grid: { color: 'rgba(26,140,255,.1)' } },
+        y: { ticks: { color: 'rgba(200,223,245,.5)', font: { size: 8, family: 'Space Mono, monospace' } }, grid: { color: 'rgba(26,140,255,.1)' }, title: { display: true, text: 'm³/s', color: 'rgba(200,223,245,.35)', font: { size: 8 } } },
+      },
+    },
+  });
+}
+
+function applyForecastToScene(data) {
+  if (!demData) return;
+  const avgInflow   = data.reduce((s, r) => s + r.predicted_inflow_m3s, 0) / data.length;
+  const delta_km3   = (avgInflow * 7 * 86400) * 1e-9;
+  const curVol      = calcVolume(currentLevel);
+  const maxVol      = calcVolume(OVERFLOW);
+  const newVol      = Math.min(Math.max(curVol + delta_km3, 5.01), maxVol);
+  // Invert V = 5 + t³×55  →  t = cbrt((V-5)/55)
+  const t           = Math.cbrt((newVol - 5) / 55);
+  const projected   = t * (OVERFLOW - MIN_LEVEL) + MIN_LEVEL;
+  const clamped     = Math.max(MIN_LEVEL, Math.min(OVERFLOW + 5, projected));
+  levelSlider.value = clamped;
+  animateToLevel(clamped);
+}
+
+// ───────────────────────────────────────────────────────────────
+//  ASYNC INIT — loads real DEM then starts the scene
+// ───────────────────────────────────────────────────────────────
+let demData = null;
+
+async function init() {
+  document.body.insertAdjacentHTML('beforeend',
+    '<div id="loading" style="position:fixed;inset:0;display:flex;align-items:center;' +
+    'justify-content:center;background:#060c14;color:#1a8cff;' +
+    'font-family:Space Mono,monospace;font-size:13px;z-index:999">' +
+    'Loading DEM data...</div>'
+  );
+
+  const { geo, dem } = await loadRealDEM();
+  demData = dem;
+
+  colorTerrain(geo, dem);
+
+  terrainMeshRef = new THREE.Mesh(geo, terrainMat);
+  terrainMeshRef.receiveShadow = true;
+  scene.add(terrainMeshRef);
+
+  DAM_CREST = dem.dam_crest;
+  WARN_LOW  = dem.warn_low;
+  WARN_HIGH = dem.warn_high;
+  OVERFLOW  = dem.dam_crest;
+  MIN_LEVEL = dem.min;
+  NORMAL    = dem.warn_low + (dem.dam_crest - dem.warn_low) * 0.5;
+
+  levelSlider.min   = dem.warn_low - 20;
+  levelSlider.max   = dem.dam_crest + 5;
+  levelSlider.value = dem.warn_low;
+  document.getElementById('slider-min-label').textContent = Math.round(dem.warn_low - 20) + ' m';
+  document.getElementById('slider-max-label').textContent = Math.round(dem.dam_crest + 5) + ' m';
+
+  document.getElementById('loading').remove();
+
+  const initialLevel = parseFloat(levelSlider.value);
+  currentLevel = initialLevel;
+  targetLevel  = initialLevel;
+  updateWater(initialLevel);
+  animate(0);
+
+  // Trigger initial AI forecast
+  scheduleForecast();
+}
+
+init();
+</script>
+</body>
+</html>

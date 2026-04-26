@@ -1,0 +1,20 @@
+{
+  "reservoir": "pancharevo",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.411768+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 17.632,
+      "outflow_m3s": 18.549,
+      "volume_mm3": 5.209,
+      "total_capacity_mm3": 6.465,
+      "pct_total": 80.57,
+      "dead_volume_mm3": 1.5,
+      "useful_volume_mm3": 3.709,
+      "pct_useful": 74.7,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.411754+00:00"
+    }
+  ]
+}

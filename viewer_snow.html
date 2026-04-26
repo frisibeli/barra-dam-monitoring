@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catchment Snow Monitor — Viewer</title>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- IBM Plex Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:      #0d1117;
+    --surface: #161b22;
+    --accent:  #B3E5FC;
+    --text:    #e0e0e0;
+    --muted:   #546E7A;
+    --border:  #30363d;
+    --snow:    #B3E5FC;
+    --snow-hi: #FFFFFF;
+    --snow-lo: #546E7A;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+  header h1 { font-size: 15px; font-weight: 600; white-space: nowrap; }
+  .stats {
+    display: flex;
+    gap: 24px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .stats span { white-space: nowrap; }
+  .stats strong { color: var(--text); }
+
+  /* ── Main layout ── */
+  .main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ── Map ── */
+  #map {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 380px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .sidebar section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar section:last-child { border-bottom: none; }
+  .sidebar h2 {
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+  }
+
+  /* ── Controls ── */
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent);
+  }
+  .date-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    padding: 4px 0;
+  }
+  .btn-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 6px;
+  }
+  .btn {
+    background: var(--border);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #3a4a5a; }
+  .btn.active { background: #1a6fa0; border-color: #1a6fa0; }
+
+  /* ── Layer toggles ── */
+  .layer-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .layer-btn {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    transition: all 0.15s;
+  }
+  .layer-btn.active {
+    background: #1a6fa0;
+    border-color: #1a6fa0;
+  }
+
+  /* ── Info cards ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .info-card {
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+  }
+  .info-card .value { font-size: 20px; font-weight: 700; color: var(--accent); }
+  .info-card .label { font-size: 9px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Chart ── */
+  .chart-wrap {
+    padding: 8px;
+    height: 220px;
+  }
+  .chart-wrap canvas { width: 100% !important; height: 100% !important; }
+
+  /* ── Loading overlay ── */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(13, 17, 23, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.3s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+  .loading-overlay .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  .loading-overlay p { color: var(--muted); font-size: 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 6px 20px;
+    font-size: 9px;
+    color: var(--muted);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ── Leaflet overrides ── */
+  .leaflet-control-zoom a {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>❄ Catchment Snow Monitor</h1>
+  <div class="stats" id="headerStats"></div>
+</header>
+
+<div class="main">
+  <div id="map"></div>
+  <div class="sidebar">
+
+    <!-- Date navigation -->
+    <section>
+      <h2>Date</h2>
+      <div class="date-label" id="dateLabel">—</div>
+      <div class="control-row">
+        <input type="range" id="dateSlider" min="0" max="0" value="0" />
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="btnPrev" title="Previous">◀</button>
+        <button class="btn" id="btnPlay" title="Play / Pause">▶ Play</button>
+        <button class="btn" id="btnNext" title="Next">▶</button>
+      </div>
+    </section>
+
+    <!-- Layer control -->
+    <section>
+      <h2>Layers</h2>
+      <div class="layer-toggles" id="layerToggles">
+        <button class="layer-btn active" data-layer="true_color">True Color</button>
+        <button class="layer-btn" data-layer="ndsi">NDSI</button>
+        <button class="layer-btn" data-layer="snow_mask">Snow Mask</button>
+        <button class="layer-btn" data-layer="overlay">Overlay</button>
+      </div>
+    </section>
+
+    <!-- Current epoch stats -->
+    <section>
+      <h2>Current Reading</h2>
+      <div class="info-grid" id="infoGrid">
+        <div class="info-card"><div class="value" id="valSnow">—</div><div class="label">Snow Cover (%)</div></div>
+        <div class="info-card"><div class="value" id="valNDSI">—</div><div class="label">NDSI Mean</div></div>
+        <div class="info-card"><div class="value" id="valCloud">—</div><div class="label">Cloud Cover (%)</div></div>
+        <div class="info-card"><div class="value" id="valValid">—</div><div class="label">Valid Pixels</div></div>
+      </div>
+    </section>
+
+    <!-- Time series chart -->
+    <section>
+      <h2>Snow Cover Time Series</h2>
+      <div class="chart-wrap">
+        <canvas id="tsChart"></canvas>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<footer>
+  Data source: Copernicus Sentinel-2 L2A · NDSI threshold: 0.40 · Catchment: Ogosta upstream watershed
+</footer>
+
+<div class="loading-overlay" id="loader">
+  <div class="spinner"></div>
+  <p id="loaderText">Loading data…</p>
+</div>
+
+<script>
+(async function boot() {
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => [...document.querySelectorAll(sel)];
+
+  // ── State ──
+  let manifest = null;
+  let results = null;
+  let currentIdx = 0;
+  let activeLayer = "true_color";
+  let playing = false;
+  let playTimer = null;
+  let imageOverlay = null;
+  let catchmentPoly = null;
+  let tsChart = null;
+
+  const map = L.map("map", { preferCanvas: true, zoomControl: true });
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    attribution: '© <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 19,
+  }).addTo(map);
+
+  // ── Load data ──
+  try {
+    $("#loaderText").textContent = "Loading manifest…";
+    const mRes = await fetch("data/snow/viewer_manifest.json");
+    manifest = await mRes.json();
+
+    $("#loaderText").textContent = "Loading results…";
+    const rRes = await fetch("data/snow/snow_results.json");
+    results = await rRes.json();
+  } catch (e) {
+    $("#loaderText").textContent = "Failed to load data. Run pipeline_snow.py first.";
+    console.error(e);
+    return;
+  }
+
+  if (!manifest.dates || manifest.dates.length === 0) {
+    $("#loaderText").textContent = "No dates found. Run pipeline_snow.py with visualizations enabled.";
+    return;
+  }
+
+  // ── Map setup ──
+  const bbox = manifest.bbox;
+  const bounds = L.latLngBounds(
+    [bbox.south, bbox.west],
+    [bbox.north, bbox.east]
+  );
+  map.fitBounds(bounds, { padding: [30, 30] });
+
+  // Catchment polygon outline
+  if (manifest.polygon && manifest.polygon.length > 0) {
+    catchmentPoly = L.polygon(manifest.polygon, {
+      color: "#fff",
+      weight: 1.5,
+      dashArray: "6 4",
+      fillOpacity: 0,
+    }).addTo(map);
+  }
+
+  // ── Header stats ──
+  const readings = results.readings || [];
+  const snowPcts = readings.map((r) => r.snow_cover_pct);
+  $("#headerStats").innerHTML = `
+    <span>Catchment: <strong>${(manifest.catchment || "unknown").toUpperCase()}</strong></span>
+    <span>Epochs: <strong>${manifest.dates.length}</strong></span>
+    <span>Peak: <strong>${snowPcts.length ? Math.max(...snowPcts).toFixed(1) : "—"}%</strong></span>
+    <span>Min: <strong>${snowPcts.length ? Math.min(...snowPcts).toFixed(1) : "—"}%</strong></span>
+  `;
+
+  // ── Slider setup ──
+  const slider = $("#dateSlider");
+  slider.max = manifest.dates.length - 1;
+  slider.addEventListener("input", () => {
+    currentIdx = parseInt(slider.value);
+    render();
+  });
+
+  // ── Navigation buttons ──
+  function goPrev() {
+    if (currentIdx > 0) { currentIdx--; slider.value = currentIdx; render(); }
+  }
+  function goNext() {
+    if (currentIdx < manifest.dates.length - 1) { currentIdx++; slider.value = currentIdx; render(); }
+  }
+  function togglePlay() {
+    playing = !playing;
+    $("#btnPlay").textContent = playing ? "⏸ Pause" : "▶ Play";
+    $("#btnPlay").classList.toggle("active", playing);
+    if (playing) {
+      playTimer = setInterval(() => {
+        if (currentIdx >= manifest.dates.length - 1) {
+          currentIdx = 0;
+        } else {
+          currentIdx++;
+        }
+        slider.value = currentIdx;
+        render();
+      }, 1200);
+    } else {
+      clearInterval(playTimer);
+    }
+  }
+
+  $("#btnPrev").addEventListener("click", goPrev);
+  $("#btnNext").addEventListener("click", goNext);
+  $("#btnPlay").addEventListener("click", togglePlay);
+
+  // Keyboard shortcuts
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") goPrev();
+    else if (e.key === "ArrowRight") goNext();
+    else if (e.key === " ") { e.preventDefault(); togglePlay(); }
+  });
+
+  // ── Layer toggles ──
+  $$(".layer-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      $$(".layer-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeLayer = btn.dataset.layer;
+      render();
+    });
+  });
+
+  // ── Chart setup ──
+  function snowColor(pct) {
+    if (pct > 50) return "#FFFFFF";
+    if (pct > 20) return "#B3E5FC";
+    return "#546E7A";
+  }
+
+  function buildChart() {
+    const ctx = $("#tsChart").getContext("2d");
+    const labels = readings.map((r) => r.date);
+    const data = readings.map((r) => r.snow_cover_pct);
+
+    tsChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Snow Cover (%)",
+          data,
+          borderColor: "#B3E5FC",
+          backgroundColor: "rgba(179, 229, 252, 0.1)",
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: data.map((v, i) =>
+            i === currentIdx ? "#fff" : snowColor(v)
+          ),
+          pointBorderColor: data.map((_, i) =>
+            i === currentIdx ? "#B3E5FC" : "transparent"
+          ),
+          pointBorderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "#161b22",
+            titleColor: "#e0e0e0",
+            bodyColor: "#e0e0e0",
+            borderColor: "#30363d",
+            borderWidth: 1,
+            titleFont: { family: "'IBM Plex Mono', monospace" },
+            bodyFont: { family: "'IBM Plex Mono', monospace" },
+            callbacks: {
+              afterBody: function(ctx) {
+                const idx = ctx[0].dataIndex;
+                const r = readings[idx];
+                if (!r) return "";
+                return [
+                  `NDSI mean: ${r.ndsi_mean}`,
+                  `Cloud: ${r.cloud_pct}%`,
+                ];
+              }
+            }
+          },
+        },
+        scales: {
+          x: {
+            ticks: { color: "#546E7A", maxRotation: 45, font: { size: 9, family: "'IBM Plex Mono'" } },
+            grid: { color: "rgba(255,255,255,0.05)" },
+          },
+          y: {
+            ticks: { color: "#546E7A", font: { family: "'IBM Plex Mono'" } },
+            grid: { color: "rgba(255,255,255,0.08)" },
+            title: { display: true, text: "%", color: "#546E7A", font: { family: "'IBM Plex Mono'" } },
+            min: 0,
+            max: 100,
+          },
+        },
+        onClick: (evt) => {
+          const points = tsChart.getElementsAtEventForMode(evt, "nearest", { intersect: true }, true);
+          if (points.length) {
+            currentIdx = points[0].index;
+            slider.value = currentIdx;
+            render();
+          }
+        },
+      },
+    });
+  }
+
+  function updateChartHighlight() {
+    if (!tsChart) return;
+    const ds = tsChart.data.datasets[0];
+    const data = readings.map((r) => r.snow_cover_pct);
+    ds.pointBackgroundColor = data.map((v, i) =>
+      i === currentIdx ? "#fff" : snowColor(v)
+    );
+    ds.pointBorderColor = data.map((_, i) =>
+      i === currentIdx ? "#B3E5FC" : "transparent"
+    );
+    ds.pointRadius = data.map((_, i) =>
+      i === currentIdx ? 7 : 4
+    );
+    tsChart.update("none");
+  }
+
+  // ── Render current state ──
+  function render() {
+    const entry = manifest.dates[currentIdx];
+    if (!entry) return;
+
+    // Date label
+    $("#dateLabel").textContent = entry.date;
+
+    // Image overlay
+    const imgPath = entry.images[activeLayer];
+    if (imageOverlay) {
+      map.removeLayer(imageOverlay);
+      imageOverlay = null;
+    }
+    if (imgPath) {
+      imageOverlay = L.imageOverlay(imgPath, bounds, {
+        opacity: 1.0,
+        interactive: false,
+      }).addTo(map);
+    }
+
+    // Info cards — find matching reading
+    const reading = readings.find((r) => r.date === entry.date);
+    if (reading) {
+      const snowEl = $("#valSnow");
+      snowEl.textContent = reading.snow_cover_pct.toFixed(1);
+      snowEl.style.color = snowColor(reading.snow_cover_pct);
+      $("#valNDSI").textContent = reading.ndsi_mean.toFixed(4);
+      $("#valCloud").textContent = reading.cloud_pct.toFixed(1);
+      $("#valValid").textContent = reading.valid_pixels.toLocaleString();
+    } else {
+      $("#valSnow").textContent = "—";
+      $("#valNDSI").textContent = "—";
+      $("#valCloud").textContent = "—";
+      $("#valValid").textContent = "—";
+    }
+
+    updateChartHighlight();
+  }
+
+  // ── Boot sequence ──
+  buildChart();
+  render();
+  $("#loader").classList.add("hidden");
+
+})();
+</script>
+</body>
+</html>

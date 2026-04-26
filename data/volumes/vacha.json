@@ -1,0 +1,20 @@
+{
+  "reservoir": "vacha",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.424452+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 28.109,
+      "outflow_m3s": 23.814,
+      "volume_mm3": 200.656,
+      "total_capacity_mm3": 226.12,
+      "pct_total": 88.74,
+      "dead_volume_mm3": 24.52,
+      "useful_volume_mm3": 176.136,
+      "pct_useful": 87.37,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.424437+00:00"
+    }
+  ]
+}

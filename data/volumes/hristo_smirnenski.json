@@ -1,0 +1,20 @@
+{
+  "reservoir": "hristo_smirnenski",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.410297+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.882,
+      "outflow_m3s": 1.468,
+      "volume_mm3": 25.978,
+      "total_capacity_mm3": 27.7,
+      "pct_total": 93.78,
+      "dead_volume_mm3": 4.2,
+      "useful_volume_mm3": 21.778,
+      "pct_useful": 92.67,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.410277+00:00"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "reservoir": "tsankov_kamak",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.424359+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 21.886,
+      "outflow_m3s": 19.379,
+      "volume_mm3": 87.84,
+      "total_capacity_mm3": 110.708,
+      "pct_total": 79.34,
+      "dead_volume_mm3": 31.2,
+      "useful_volume_mm3": 56.64,
+      "pct_useful": 71.24,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.424338+00:00"
+    }
+  ]
+}

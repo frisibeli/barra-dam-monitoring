@@ -1,0 +1,20 @@
+{
+  "reservoir": "gorni_dabnik",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.421706+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 1.007,
+      "outflow_m3s": 1.007,
+      "volume_mm3": 54.916,
+      "total_capacity_mm3": 130.0,
+      "pct_total": 42.24,
+      "dead_volume_mm3": 3.0,
+      "useful_volume_mm3": 51.916,
+      "pct_useful": 40.88,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.421684+00:00"
+    }
+  ]
+}

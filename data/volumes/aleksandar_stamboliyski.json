@@ -1,0 +1,20 @@
+{
+  "reservoir": "aleksandar_stamboliyski",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.423021+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 12.528,
+      "outflow_m3s": 25.951,
+      "volume_mm3": 191.017,
+      "total_capacity_mm3": 205.569,
+      "pct_total": 92.92,
+      "dead_volume_mm3": 20.0,
+      "useful_volume_mm3": 171.017,
+      "pct_useful": 92.16,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.422999+00:00"
+    }
+  ]
+}

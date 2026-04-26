@@ -1,0 +1,20 @@
+{
+  "reservoir": "karagyol",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.411352+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.0,
+      "outflow_m3s": 0.0,
+      "volume_mm3": 0.319,
+      "total_capacity_mm3": 2.252,
+      "pct_total": 14.18,
+      "dead_volume_mm3": 0.2,
+      "useful_volume_mm3": 0.119,
+      "pct_useful": 5.82,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.411336+00:00"
+    }
+  ]
+}

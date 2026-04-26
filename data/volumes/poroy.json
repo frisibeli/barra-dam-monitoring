@@ -1,0 +1,20 @@
+{
+  "reservoir": "poroy",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.411605+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.451,
+      "outflow_m3s": 0.0,
+      "volume_mm3": 10.293,
+      "total_capacity_mm3": 44.24,
+      "pct_total": 23.27,
+      "dead_volume_mm3": 2.0,
+      "useful_volume_mm3": 8.293,
+      "pct_useful": 19.63,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.411590+00:00"
+    }
+  ]
+}

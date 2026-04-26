@@ -1,0 +1,20 @@
+{
+  "reservoir": "saedenie",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.421897+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.752,
+      "outflow_m3s": 0.752,
+      "volume_mm3": 8.928,
+      "total_capacity_mm3": 12.81,
+      "pct_total": 69.7,
+      "dead_volume_mm3": 1.5,
+      "useful_volume_mm3": 7.428,
+      "pct_useful": 65.68,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.421879+00:00"
+    }
+  ]
+}

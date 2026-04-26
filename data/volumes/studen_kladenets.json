@@ -1,0 +1,20 @@
+{
+  "reservoir": "studen_kladenets",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.424791+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 113.963,
+      "outflow_m3s": 104.995,
+      "volume_mm3": 331.384,
+      "total_capacity_mm3": 387.772,
+      "pct_total": 85.46,
+      "dead_volume_mm3": 90.667,
+      "useful_volume_mm3": 240.717,
+      "pct_useful": 81.02,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.424774+00:00"
+    }
+  ]
+}

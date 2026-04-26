@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bulgaria Dams — Interactive Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --bg:      #0f1117;
+    --surface: #1a1d29;
+    --card:    #21242f;
+    --accent:  #3b82f6;
+    --text:    #e2e8f0;
+    --muted:   #94a3b8;
+    --border:  #2d3348;
+    --radius:  10px;
+    --inflow:  #4CAF50;
+    --outflow: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    position: relative;
+    z-index: 1000;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  header h1 { font-size: 17px; font-weight: 700; }
+  .header-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    flex-shrink: 0;
+  }
+
+  /* ── Map ── */
+  #map {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* ── Tooltip overrides (dark theme) ── */
+  .leaflet-tooltip.dam-tip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    pointer-events: none;
+    max-width: 260px;
+  }
+  .leaflet-tooltip.dam-tip::before { display: none; }
+  .tip-click-hint {
+    margin-top: 8px;
+    padding-top: 7px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: #60a5fa;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+
+  .tip-name    { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .tip-name-en { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .tip-row     { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 3px; font-size: 12px; }
+  .tip-label   { color: var(--muted); }
+  .tip-value   { font-weight: 600; text-align: right; }
+  .tip-bar-wrap { margin: 8px 0 4px; }
+  .tip-bar-bg  { background: var(--border); border-radius: 3px; height: 6px; overflow: hidden; }
+  .tip-bar-fg  { height: 100%; border-radius: 3px; transition: width 0.2s; }
+  .tip-date    { font-size: 11px; color: var(--muted); margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; }
+  .tip-nodata  { color: var(--muted); font-style: italic; font-size: 12px; margin-top: 4px; }
+
+  /* ── Loading overlay ── */
+  #loading {
+    position: absolute;
+    inset: 0;
+    z-index: 2000;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  /* ── Summary bar ── */
+  #summary {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 20px;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  #summary strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>💧 Bulgaria — Major Reservoirs</h1>
+    <div class="header-sub">52 regulated dams · МОСВ daily bulletins · hover for latest reading</div>
+  </div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> ≥ 60% full</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> 30–60%</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> &lt; 30%</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#6b7280"></div> No data</div>
+  </div>
+</header>
+
+<div style="position:relative;flex:1;min-height:0">
+  <div id="loading">Loading dam data…</div>
+  <div id="map"></div>
+  <div id="summary" style="display:none"></div>
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// Map init — dark tile layer (CartoDB Dark Matter)
+// ---------------------------------------------------------------------------
+const map = L.map('map', {
+  center: [42.5, 25.5],
+  zoom: 7,
+  zoomControl: true,
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 19,
+}).addTo(map);
+
+// ---------------------------------------------------------------------------
+// Colour coding by fill %
+// ---------------------------------------------------------------------------
+function markerColor(pct) {
+  if (pct == null) return '#6b7280';
+  if (pct >= 60)   return '#3b82f6';
+  if (pct >= 30)   return '#f59e0b';
+  return '#ef4444';
+}
+
+function markerRadius(capacity_mm3) {
+  if (!capacity_mm3) return 7;
+  // Scale roughly: 500 млн.м³ → r=14, 50 → r=8, 5 → r=6
+  return Math.max(6, Math.min(16, 5 + Math.log10(capacity_mm3) * 3));
+}
+
+// ---------------------------------------------------------------------------
+// Tooltip HTML builder
+// ---------------------------------------------------------------------------
+function buildTooltipHtml(meta, latest) {
+  const name = meta.name_bg;
+  const nameEn = meta.name_en;
+  const cap = meta.capacity_mm3 ? meta.capacity_mm3.toFixed(0) + ' млн.м³' : '—';
+
+  if (!latest) {
+    return `
+      <div class="tip-name">${name}</div>
+      <div class="tip-name-en">${nameEn}</div>
+      <div class="tip-row"><span class="tip-label">Capacity</span><span class="tip-value">${cap}</span></div>
+      <div class="tip-nodata">No bulletin data yet</div>`;
+  }
+
+  const pct = latest.pct_total != null ? latest.pct_total.toFixed(1) : null;
+  const vol = latest.volume_mm3 != null ? latest.volume_mm3.toFixed(1) : '—';
+  const pctUseful = latest.pct_useful != null ? latest.pct_useful.toFixed(1) + '%' : '—';
+  const inflow = latest.inflow_m3s != null ? latest.inflow_m3s.toFixed(3) + ' м³/с' : '—';
+  const outflow = latest.outflow_m3s != null ? latest.outflow_m3s.toFixed(3) + ' м³/с' : '—';
+  const color = markerColor(latest.pct_total);
+  const barWidth = pct != null ? Math.min(100, parseFloat(pct)) : 0;
+
+  return `
+    <div class="tip-name">${name}</div>
+    <div class="tip-name-en">${nameEn} · ${meta.province || ''}</div>
+    <div class="tip-bar-wrap">
+      <div class="tip-bar-bg"><div class="tip-bar-fg" style="width:${barWidth}%;background:${color}"></div></div>
+    </div>
+    <div class="tip-row">
+      <span class="tip-label">Volume</span>
+      <span class="tip-value" style="color:${color}">${vol} млн.м³ ${pct != null ? '(' + pct + '%)' : ''}</span>
+    </div>
+    <div class="tip-row"><span class="tip-label">Useful fill</span><span class="tip-value">${pctUseful}</span></div>
+    <div class="tip-row"><span class="tip-label">Capacity</span><span class="tip-value">${cap}</span></div>
+    <div class="tip-row">
+      <span class="tip-label">Inflow</span>
+      <span class="tip-value" style="color:#4CAF50">${inflow}</span>
+    </div>
+    <div class="tip-row">
+      <span class="tip-label">Outflow</span>
+      <span class="tip-value" style="color:#ef4444">${outflow}</span>
+    </div>
+    <div class="tip-date">📅 Latest bulletin: ${latest.date}</div>`;
+}
+
+// ---------------------------------------------------------------------------
+// Load all data and place pins
+// ---------------------------------------------------------------------------
+async function loadDamData(meta) {
+  try {
+    const resp = await fetch(`data/volumes/${meta.id}.json`);
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    const readings = (data.readings || []).filter(r => r.volume_mm3 != null);
+    if (!readings.length) return null;
+    return readings[readings.length - 1];  // latest
+  } catch {
+    return null;
+  }
+}
+
+async function init() {
+  // Load metadata
+  const metaResp = await fetch('data/dams_meta.json');
+  const dams = await metaResp.json();
+
+  // Load all dam readings in parallel
+  const latestReadings = await Promise.all(dams.map(d => loadDamData(d)));
+
+  let withData = 0;
+
+  dams.forEach((meta, i) => {
+    const latest = latestReadings[i];
+    const pct = latest ? latest.pct_total : null;
+    const color = markerColor(pct);
+    const radius = markerRadius(meta.capacity_mm3);
+
+    if (latest) withData++;
+
+    const isOgosta = meta.id === 'ogosta';
+
+    const marker = L.circleMarker([meta.lat, meta.lon], {
+      radius: isOgosta ? radius + 1 : radius,
+      fillColor: color,
+      fillOpacity: 0.85,
+      color: isOgosta ? '#60a5fa' : 'rgba(255,255,255,0.4)',
+      weight: isOgosta ? 2.5 : 1.5,
+    }).addTo(map);
+
+    const tooltipHtml = buildTooltipHtml(meta, latest)
+      + (isOgosta ? '<div class="tip-click-hint">Click to open monitoring hub →</div>' : '');
+    marker.bindTooltip(tooltipHtml, {
+      className: 'dam-tip',
+      sticky: true,
+      opacity: 1,
+      direction: 'auto',
+      offset: [10, 0],
+    });
+
+    if (isOgosta) {
+      marker.on('click', () => { window.location.href = 'viewer_ogosta.html'; });
+      marker.on('add', () => {
+        const el = marker.getElement();
+        if (el) el.style.cursor = 'pointer';
+      });
+    }
+  });
+
+  document.getElementById('loading').style.display = 'none';
+  const summary = document.getElementById('summary');
+  summary.style.display = 'block';
+  summary.innerHTML = `<strong>${withData}</strong> of <strong>${dams.length}</strong> dams have bulletin data`;
+}
+
+init().catch(err => {
+  document.getElementById('loading').innerHTML =
+    `<span style="color:#ef4444">Error loading data: ${err.message}</span>`;
+  console.error(err);
+});
+</script>
+</body>
+</html>

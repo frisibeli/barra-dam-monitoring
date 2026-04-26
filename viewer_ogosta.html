@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Огоста Dam — Monitoring Hub</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+  :root {
+    --bg:       #0f1117;
+    --surface:  #1a1d29;
+    --card:     #21242f;
+    --accent:   #3b82f6;
+    --accent2:  #60a5fa;
+    --inflow:   #4CAF50;
+    --outflow:  #ef4444;
+    --snow:     #93c5fd;
+    --warn:     #f59e0b;
+    --text:     #e2e8f0;
+    --muted:    #94a3b8;
+    --border:   #2d3348;
+    --radius:   10px;
+    --sidebar:  240px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ─────────────── SIDEBAR ─────────────── */
+  #sidebar {
+    width: var(--sidebar);
+    min-width: var(--sidebar);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+  .sb-back {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.15s;
+  }
+  .sb-back:hover { color: var(--text); }
+  .sb-dam-header {
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sb-dam-header .dam-title {
+    font-size: 17px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sb-dam-header .dam-title .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--inflow);
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+  }
+  .sb-dam-header .dam-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+  .cap-badge {
+    display: inline-block;
+    background: #1e3a5f;
+    color: var(--accent2);
+    border: 1px solid #2b4d80;
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  /* nav items */
+  .sb-nav {
+    flex: 1;
+    padding: 10px 0;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.12s;
+    user-select: none;
+    color: var(--muted);
+  }
+  .nav-item:hover { background: var(--card); color: var(--text); }
+  .nav-item.active { background: #1e3050; color: var(--accent2); }
+  .nav-item .icon { font-size: 14px; width: 18px; text-align: center; }
+  .nav-group-label {
+    padding: 12px 16px 4px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+  }
+  .nav-sub-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 16px 7px 38px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: background 0.12s;
+    user-select: none;
+  }
+  .nav-sub-item:hover { background: var(--card); color: var(--text); }
+  .nav-sub-item.active { color: var(--accent2); background: rgba(59,130,246,0.08); }
+  .nav-sub-item::before {
+    content: '•';
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.5;
+  }
+  .nav-sub-item.active::before { opacity: 1; color: var(--accent); }
+
+  /* ─────────────── MAIN AREA ─────────────── */
+  #main {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* ── content sections ── */
+  .content-section { display: none; flex-direction: column; flex: 1; }
+  .content-section.active { display: flex; }
+
+  /* page header */
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-shrink: 0;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .page-header h2 { font-size: 17px; font-weight: 700; }
+  .page-header .page-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .page-header .header-actions { display: flex; gap: 8px; align-items: center; }
+
+  /* generic open-full link */
+  a.open-full {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--card);
+    color: var(--accent2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 13px;
+    font-size: 12px;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  a.open-full:hover { background: #1e3050; border-color: var(--accent); }
+
+  /* content padding wrapper */
+  .content-pad { padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; flex: 1; }
+
+  /* KPI row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .kpi .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .kpi .value { font-size: 24px; font-weight: 700; line-height: 1; }
+  .kpi .unit  { font-size: 12px; color: var(--muted); margin-left: 3px; }
+  .kpi .sub   { font-size: 11px; color: var(--muted); margin-top: 5px; }
+  .kpi .sub.up   { color: var(--inflow); }
+  .kpi .sub.down { color: var(--outflow); }
+  .kpi .sub.warn { color: var(--warn); }
+
+  /* chart cards */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .chart-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .chart-wrap { position: relative; width: 100%; }
+  .chart-wrap.h200 { height: 200px; }
+  .chart-wrap.h260 { height: 260px; }
+  .chart-wrap.h300 { height: 300px; }
+  .chart-wrap.h340 { height: 340px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* station cards */
+  .station-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .station-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .station-card .stn-name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .station-card .stn-grid { display: flex; gap: 16px; }
+  .station-card .stn-metric .stn-val { font-size: 20px; font-weight: 700; }
+  .station-card .stn-metric .stn-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* forecast table */
+  .forecast-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .forecast-table th {
+    text-align: left;
+    padding: 8px 12px;
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .forecast-table td { padding: 9px 12px; border-bottom: 1px solid rgba(45,51,72,0.5); }
+  .forecast-table tr:last-child td { border-bottom: none; }
+  .forecast-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .peak-row td { color: var(--warn); font-weight: 600; }
+
+  /* model info footer */
+  .model-footer {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 10px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .model-footer span { display: flex; align-items: center; gap: 5px; }
+
+  /* date range selector */
+  .range-selector {
+    display: flex;
+    gap: 4px;
+  }
+  .range-btn {
+    background: var(--card);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .range-btn:hover { color: var(--text); border-color: var(--accent); }
+  .range-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* data table */
+  .data-table-wrap {
+    overflow-x: auto;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .data-table thead th {
+    position: sticky;
+    top: 0;
+    background: var(--card);
+    padding: 8px 12px;
+    text-align: left;
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td { padding: 7px 12px; border-bottom: 1px solid rgba(45,51,72,0.5); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .data-table .pos { color: var(--inflow); }
+  .data-table .neg { color: var(--outflow); }
+
+  /* scenario table */
+  .scenario-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .scenario-table th {
+    text-align: left;
+    padding: 9px 14px;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .scenario-table td { padding: 10px 14px; border-bottom: 1px solid rgba(45,51,72,0.5); }
+  .scenario-table tr:last-child td { border-bottom: none; }
+  .badge {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green  { background: #14532d; color: #4ade80; }
+  .badge-yellow { background: #451a03; color: #fb923c; }
+  .badge-red    { background: #450a0a; color: #f87171; }
+
+  /* 3D sim CTA */
+  .sim-cta {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1a1d29 100%);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .sim-cta .cta-text h3 { font-size: 16px; font-weight: 700; }
+  .sim-cta .cta-text p { font-size: 13px; color: var(--muted); margin-top: 5px; }
+  .sim-cta a.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .sim-cta a.btn-primary:hover { background: #2563eb; }
+
+  /* loading / error states */
+  .state-loading, .state-error {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .state-error { color: var(--outflow); }
+
+  /* insar stats bar */
+  .insar-stats {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .insar-stat { }
+  .insar-stat .is-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 4px; }
+  .insar-stat .is-value { font-size: 20px; font-weight: 700; }
+  .insar-stat .is-unit  { font-size: 11px; color: var(--muted); margin-left: 3px; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3d4465; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ SIDEBAR ═══════════════════════════════════════ -->
+<nav id="sidebar">
+  <a class="sb-back" href="viewer_dams_map.html">
+    <span>&#8592;</span> All Dams
+  </a>
+
+  <div class="sb-dam-header">
+    <div class="dam-title">
+      <span class="status-dot"></span>
+      Огоста
+    </div>
+    <div class="dam-sub">Ogosta · Montana Province</div>
+    <div class="cap-badge">506 млн.м³</div>
+  </div>
+
+  <div class="sb-nav">
+    <div class="nav-item active" onclick="switchSection('forecast')" id="nav-forecast">
+      <span class="icon">⚡</span> Forecast
+    </div>
+
+    <div class="nav-group-label">Observation</div>
+    <div class="nav-sub-item active" onclick="switchObs('water')" id="nav-water">
+      Water Area
+    </div>
+    <div class="nav-sub-item" onclick="switchObs('snow')" id="nav-snow">
+      Snow Cover
+    </div>
+    <div class="nav-sub-item" onclick="switchObs('insar')" id="nav-insar">
+      InSAR
+    </div>
+
+    <div class="nav-item" onclick="switchSection('simulation')" id="nav-simulation">
+      <span class="icon">🎮</span> Simulation
+    </div>
+    <div class="nav-item" onclick="switchSection('historic')" id="nav-historic">
+      <span class="icon">📊</span> Historic Data
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════ MAIN ═══════════════════════════════════════ -->
+<main id="main">
+
+  <!-- ──────────────────── FORECAST ──────────────────── -->
+  <section class="content-section active" id="sec-forecast">
+    <div class="page-header">
+      <div>
+        <h2>7-Day Inflow Forecast</h2>
+        <div class="page-sub" id="forecast-page-sub">ML model · Open-Meteo weather · loading…</div>
+      </div>
+    </div>
+
+    <div class="content-pad">
+
+      <!-- KPIs -->
+      <div class="kpi-row" id="forecast-kpis">
+        <div class="kpi"><div class="label">Loading forecast…</div><div class="value">—</div></div>
+      </div>
+
+      <!-- Forecast bar chart -->
+      <div class="chart-card">
+        <h3>
+          Predicted Inflow (m³/s)
+          <span style="font-size:11px;font-weight:400;color:var(--muted)">Shaded band = ±2 m³/s uncertainty</span>
+        </h3>
+        <div class="chart-wrap h300">
+          <canvas id="chart-forecast"></canvas>
+        </div>
+      </div>
+
+      <!-- Weather stations row -->
+      <div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Weather Stations — 7-day outlook</div>
+        <div class="station-row">
+          <div class="station-card">
+            <div class="stn-name">Chiprovtsi</div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:8px">43.38°N 22.88°E</div>
+            <div class="stn-grid">
+              <div class="stn-metric">
+                <div class="stn-val">9<span style="font-size:13px">°C</span></div>
+                <div class="stn-lbl">Avg Temp</div>
+              </div>
+              <div class="stn-metric">
+                <div class="stn-val" style="color:var(--snow)">28<span style="font-size:13px">mm</span></div>
+                <div class="stn-lbl">Precip</div>
+              </div>
+            </div>
+          </div>
+          <div class="station-card">
+            <div class="stn-name">Berkovitsa</div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:8px">43.24°N 23.13°E</div>
+            <div class="stn-grid">
+              <div class="stn-metric">
+                <div class="stn-val">11<span style="font-size:13px">°C</span></div>
+                <div class="stn-lbl">Avg Temp</div>
+              </div>
+              <div class="stn-metric">
+                <div class="stn-val" style="color:var(--snow)">19<span style="font-size:13px">mm</span></div>
+                <div class="stn-lbl">Precip</div>
+              </div>
+            </div>
+          </div>
+          <div class="station-card">
+            <div class="stn-name">Montana</div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:8px">43.41°N 23.22°E</div>
+            <div class="stn-grid">
+              <div class="stn-metric">
+                <div class="stn-val">13<span style="font-size:13px">°C</span></div>
+                <div class="stn-lbl">Avg Temp</div>
+              </div>
+              <div class="stn-metric">
+                <div class="stn-val" style="color:var(--snow)">12<span style="font-size:13px">mm</span></div>
+                <div class="stn-lbl">Precip</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily breakdown table -->
+      <div class="chart-card">
+        <h3>Daily Breakdown</h3>
+        <table class="forecast-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Day</th>
+              <th>Predicted Inflow</th>
+              <th>Lower bound</th>
+              <th>Upper bound</th>
+            </tr>
+          </thead>
+          <tbody id="forecast-tbody">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Model info -->
+      <div class="model-footer" id="forecast-model-footer">
+        <span>🤖 ML model (Ridge)</span>
+        <span>🌤️ Weather: Open-Meteo API</span>
+        <span id="forecast-footer-date" style="margin-left:auto;color:var(--muted)">Forecast: loading…</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ──────────────────── OBSERVATION ──────────────────── -->
+  <section class="content-section" id="sec-observation">
+    <div class="page-header">
+      <div>
+        <h2 id="obs-page-title">Water Area Monitor</h2>
+        <div class="page-sub" id="obs-page-sub">Sentinel-2 L2A · 6-day revisit · Water Index threshold</div>
+      </div>
+      <div class="header-actions">
+        <a id="obs-open-full" class="open-full" href="viewer.html" target="_blank">
+          Open full viewer ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- Water area sub-section -->
+    <div id="obs-water" class="content-pad">
+      <div class="kpi-row" id="water-kpis">
+        <div class="kpi"><div class="label">Loading…</div><div class="value">—</div></div>
+      </div>
+      <div class="chart-card">
+        <h3>Water Surface Area over Time</h3>
+        <div class="chart-wrap h260">
+          <canvas id="chart-water"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Snow cover sub-section -->
+    <div id="obs-snow" style="display:none" class="content-pad">
+      <div class="kpi-row" id="snow-kpis">
+        <div class="kpi"><div class="label">Loading…</div><div class="value">—</div></div>
+      </div>
+      <div class="chart-card">
+        <h3>Snow Cover (%) — Ogosta Upstream Catchment</h3>
+        <div class="chart-wrap h260">
+          <canvas id="chart-snow"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- InSAR sub-section -->
+    <div id="obs-insar" style="display:none" class="content-pad">
+      <div id="insar-content">
+        <div class="state-loading">Loading InSAR index…</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ──────────────────── SIMULATION ──────────────────── -->
+  <section class="content-section" id="sec-simulation">
+    <div class="page-header">
+      <div>
+        <h2>Simulation</h2>
+        <div class="page-sub">Scenario modelling · 3D digital twin · DEM-based flood extent</div>
+      </div>
+    </div>
+
+    <div class="content-pad">
+
+      <!-- Current status KPIs (from latest bulletin) -->
+      <div class="kpi-row" id="sim-kpis">
+        <div class="kpi"><div class="label">Loading…</div><div class="value">—</div></div>
+      </div>
+
+      <!-- CTA for 3D simulator -->
+      <div class="sim-cta">
+        <div class="cta-text">
+          <h3>3D Digital Twin — Flood Simulator</h3>
+          <p>Interactive Three.js scene with DEM terrain, water level control (420–530 m asl), real-time flood metrics and scenario presets.</p>
+        </div>
+        <a class="btn-primary" href="dam_flood_simulator.html" target="_blank">
+          Open 3D Simulator ↗
+        </a>
+      </div>
+
+      <!-- Scenario reference table -->
+      <div class="chart-card">
+        <h3>Scenario Reference — Projected Outcomes</h3>
+        <table class="scenario-table">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Trigger condition</th>
+              <th>Reservoir response</th>
+              <th>Volume change</th>
+              <th>Risk level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Extreme drought</strong></td>
+              <td>Inflow &lt; 1 m³/s · 30 days</td>
+              <td>Volume −30% from current</td>
+              <td>−93 млн.м³</td>
+              <td><span class="badge badge-yellow">Moderate</span></td>
+            </tr>
+            <tr>
+              <td><strong>Normal operation</strong></td>
+              <td>Avg inflow 6–8 m³/s</td>
+              <td>Stable ±5 млн.м³/month</td>
+              <td>±5 млн.м³</td>
+              <td><span class="badge badge-green">Low</span></td>
+            </tr>
+            <tr>
+              <td><strong>Heavy rainfall</strong></td>
+              <td>Inflow &gt; 30 m³/s · 7 days</td>
+              <td>Volume +18 млн.м³; gates open</td>
+              <td>+18 млн.м³</td>
+              <td><span class="badge badge-yellow">Moderate</span></td>
+            </tr>
+            <tr>
+              <td><strong>Overflow threshold</strong></td>
+              <td>Fill ≥ 95% (480 млн.м³)</td>
+              <td>Emergency spillway activation</td>
+              <td>+170 млн.м³ from current</td>
+              <td><span class="badge badge-red">High</span></td>
+            </tr>
+            <tr>
+              <td><strong>Dam breach</strong></td>
+              <td>Structural failure</td>
+              <td>Instantaneous release</td>
+              <td>−310 млн.м³</td>
+              <td><span class="badge badge-red">Critical</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ──────────────────── HISTORIC DATA ──────────────────── -->
+  <section class="content-section" id="sec-historic">
+    <div class="page-header">
+      <div>
+        <h2>Historic Data</h2>
+        <div class="page-sub">МОСВ daily bulletins · volume, inflow &amp; outflow</div>
+      </div>
+      <div class="header-actions">
+        <div class="range-selector" id="hist-range-selector">
+          <button class="range-btn" onclick="setHistRange(90)" data-days="90">90d</button>
+          <button class="range-btn active" onclick="setHistRange(180)" data-days="180">180d</button>
+          <button class="range-btn" onclick="setHistRange(365)" data-days="365">1y</button>
+          <button class="range-btn" onclick="setHistRange(0)" data-days="0">All</button>
+        </div>
+        <a class="open-full" href="viewer_mosv.html" target="_blank">
+          Full dashboard ↗
+        </a>
+      </div>
+    </div>
+
+    <div class="content-pad">
+
+      <!-- KPIs -->
+      <div class="kpi-row" id="hist-kpis">
+        <div class="kpi"><div class="label">Loading…</div><div class="value">—</div></div>
+      </div>
+
+      <!-- Volume chart -->
+      <div class="chart-card">
+        <h3>Reservoir Volume</h3>
+        <div class="chart-wrap h260">
+          <canvas id="chart-hist-volume"></canvas>
+        </div>
+      </div>
+
+      <!-- Inflow / Outflow + Net flow -->
+      <div class="two-col">
+        <div class="chart-card">
+          <h3>Inflow &amp; Outflow</h3>
+          <div class="chart-wrap h200">
+            <canvas id="chart-hist-flow"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>Net Flow</h3>
+          <div class="chart-wrap h200">
+            <canvas id="chart-hist-net"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data table -->
+      <div class="chart-card" style="padding:0;overflow:hidden">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--muted)">
+          Recent Readings
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Volume (млн.м³)</th>
+                <th>Fill %</th>
+                <th>Useful %</th>
+                <th>Inflow (m³/s)</th>
+                <th>Outflow (m³/s)</th>
+                <th>Net (m³/s)</th>
+              </tr>
+            </thead>
+            <tbody id="hist-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════
+// Navigation
+// ═══════════════════════════════════════════════════
+
+const SECTIONS = ['forecast', 'observation', 'simulation', 'historic'];
+const OBS_TABS = ['water', 'snow', 'insar'];
+
+let currentSection = 'forecast';
+let currentObs = 'water';
+
+function switchSection(id) {
+  if (id === 'observation') {
+    // keep last active obs tab
+    id = 'observation';
+  }
+  currentSection = id;
+
+  SECTIONS.forEach(s => {
+    const sec = document.getElementById(`sec-${s}`);
+    if (sec) sec.classList.toggle('active', s === id);
+  });
+
+  // update sidebar nav items
+  ['forecast', 'simulation', 'historic'].forEach(s => {
+    document.getElementById(`nav-${s}`).classList.toggle('active', s === id);
+  });
+
+  // if switching to observation, activate observation section
+  if (id === 'observation') {
+    document.getElementById('sec-observation').classList.add('active');
+    loadObsTab(currentObs);
+  }
+}
+
+function switchObs(tab) {
+  currentObs = tab;
+  currentSection = 'observation';
+
+  // show observation section
+  SECTIONS.forEach(s => {
+    const sec = document.getElementById(`sec-${s}`);
+    if (sec) sec.classList.toggle('active', s === 'observation');
+  });
+  ['forecast', 'simulation', 'historic'].forEach(s => {
+    document.getElementById(`nav-${s}`).classList.remove('active');
+  });
+
+  // update sub nav
+  OBS_TABS.forEach(t => {
+    document.getElementById(`nav-${t}`).classList.toggle('active', t === tab);
+  });
+
+  // show/hide sub panels
+  document.getElementById('obs-water').style.display = tab === 'water' ? '' : 'none';
+  document.getElementById('obs-snow').style.display  = tab === 'snow'  ? '' : 'none';
+  document.getElementById('obs-insar').style.display = tab === 'insar' ? '' : 'none';
+
+  // update page header
+  const titles = { water: 'Water Area Monitor', snow: 'Snow Cover Monitor', insar: 'InSAR Deformation' };
+  const subs   = {
+    water: 'Sentinel-2 L2A · 6-day revisit · Water Index threshold',
+    snow:  'Sentinel-2 L2A · NDSI ≥ 0.40 · Ogosta upstream catchment',
+    insar: 'Sentinel-1 · Relative orbit 80 · Descending · Vertical displacement',
+  };
+  const hrefs  = { water: 'viewer.html', snow: 'viewer_snow.html', insar: 'viewer_insar.html' };
+  document.getElementById('obs-page-title').textContent = titles[tab];
+  document.getElementById('obs-page-sub').textContent   = subs[tab];
+  document.getElementById('obs-open-full').href         = hrefs[tab];
+
+  loadObsTab(tab);
+}
+
+// ═══════════════════════════════════════════════════
+// Chart helpers
+// ═══════════════════════════════════════════════════
+
+const CHART_DEFAULTS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  animation: { duration: 300 },
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#21242f',
+      borderColor: '#2d3348',
+      borderWidth: 1,
+      titleColor: '#e2e8f0',
+      bodyColor: '#94a3b8',
+    },
+  },
+  scales: {
+    x: {
+      type: 'time',
+      ticks: { color: '#94a3b8', maxTicksLimit: 8 },
+      grid: { color: 'rgba(45,51,72,0.5)' },
+    },
+    y: {
+      ticks: { color: '#94a3b8' },
+      grid: { color: 'rgba(45,51,72,0.5)' },
+    },
+  },
+};
+
+const chartInstances = {};
+
+function destroyChart(id) {
+  if (chartInstances[id]) {
+    chartInstances[id].destroy();
+    delete chartInstances[id];
+  }
+}
+
+function makeChart(id, config) {
+  destroyChart(id);
+  const ctx = document.getElementById(id).getContext('2d');
+  chartInstances[id] = new Chart(ctx, config);
+  return chartInstances[id];
+}
+
+// ═══════════════════════════════════════════════════
+// FORECAST — live from /api/forecast
+// ═══════════════════════════════════════════════════
+
+function renderForecastChart(forecastData) {
+  const labels  = forecastData.map(d => d.date);
+  const values  = forecastData.map(d => d.predicted_inflow_m3s);
+  const upper   = values.map(v => +(v + 2).toFixed(3));
+  const lower   = values.map(v => Math.max(0, +(v - 2).toFixed(3)));
+  const peakIdx = values.indexOf(Math.max(...values));
+
+  makeChart('chart-forecast', {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Predicted inflow',
+          data: values,
+          backgroundColor: values.map((_, i) =>
+            i === peakIdx ? 'rgba(245,158,11,0.8)' : 'rgba(59,130,246,0.7)'),
+          borderColor: values.map((_, i) =>
+            i === peakIdx ? '#f59e0b' : '#3b82f6'),
+          borderWidth: 1,
+          borderRadius: 4,
+          order: 2,
+        },
+        {
+          label: 'Upper bound',
+          data: upper,
+          type: 'line',
+          borderColor: 'rgba(96,165,250,0.3)',
+          backgroundColor: 'rgba(96,165,250,0.08)',
+          borderWidth: 1,
+          borderDash: [4, 3],
+          pointRadius: 0,
+          fill: '+1',
+          order: 1,
+        },
+        {
+          label: 'Lower bound',
+          data: lower,
+          type: 'line',
+          borderColor: 'rgba(96,165,250,0.3)',
+          backgroundColor: 'rgba(96,165,250,0.08)',
+          borderWidth: 1,
+          borderDash: [4, 3],
+          pointRadius: 0,
+          fill: false,
+          order: 1,
+        },
+      ],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: {
+        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(45,51,72,0.5)' } },
+        y: {
+          ticks: { color: '#94a3b8', callback: v => v.toFixed(1) + ' m³/s' },
+          grid: { color: 'rgba(45,51,72,0.5)' },
+          min: 0,
+        },
+      },
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        legend: { display: false },
+        tooltip: {
+          ...CHART_DEFAULTS.plugins.tooltip,
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)} m³/s`,
+          },
+        },
+      },
+    },
+  });
+
+  // Table rows
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const tbody = document.getElementById('forecast-tbody');
+  tbody.innerHTML = forecastData.map((d, i) => {
+    const isPeak  = i === peakIdx;
+    const dayName = dayNames[new Date(d.date).getDay()];
+    return `<tr class="${isPeak ? 'peak-row' : ''}">
+      <td>${d.date}</td>
+      <td>${dayName}${isPeak ? ' ★' : ''}</td>
+      <td><strong>${d.predicted_inflow_m3s.toFixed(3)}</strong> m³/s</td>
+      <td>${Math.max(0, d.predicted_inflow_m3s - 2).toFixed(3)} m³/s</td>
+      <td>${(d.predicted_inflow_m3s + 2).toFixed(3)} m³/s</td>
+    </tr>`;
+  }).join('');
+
+  // KPIs
+  const avg   = values.reduce((s, v) => s + v, 0) / values.length;
+  const peak  = forecastData[peakIdx];
+  const trend = values[values.length - 1] < values[0] ? '↘' : '↗';
+  const trendClass = values[values.length - 1] < values[0] ? 'down' : 'up';
+  const trendLabel = values[values.length - 1] < values[0] ? 'Declining over period' : 'Rising over period';
+  document.getElementById('forecast-kpis').innerHTML = `
+    <div class="kpi">
+      <div class="label">Avg Forecast Inflow</div>
+      <div class="value">${avg.toFixed(1)}<span class="unit">m³/s</span></div>
+      <div class="sub">${forecastData.length}-day average</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Peak Day</div>
+      <div class="value" style="font-size:18px">${peak.date}</div>
+      <div class="sub warn">${peak.predicted_inflow_m3s.toFixed(3)} m³/s · Day ${peakIdx + 1}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Min Inflow</div>
+      <div class="value">${Math.min(...values).toFixed(1)}<span class="unit">m³/s</span></div>
+      <div class="sub">Lowest forecast day</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Trend</div>
+      <div class="value">${trend}</div>
+      <div class="sub ${trendClass}">${trendLabel}</div>
+    </div>
+  `;
+
+  // Header sub + model footer
+  const now = new Date().toUTCString().replace(':00 GMT', ' UTC');
+  document.getElementById('forecast-page-sub').textContent =
+    `ML model · Ridge regression · Open-Meteo weather · generated ${now}`;
+  document.getElementById('forecast-footer-date').textContent =
+    `Forecast: ${forecastData[0].date} – ${forecastData[forecastData.length - 1].date}`;
+}
+
+async function initForecastSection() {
+  try {
+    const resp = await fetch('/api/forecast');
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
+    renderForecastChart(data);
+  } catch (err) {
+    // Graceful fallback — server not running
+    document.getElementById('forecast-kpis').innerHTML =
+      `<div class="kpi" style="grid-column:1/-1">
+        <div class="label">Forecast unavailable</div>
+        <div class="value" style="font-size:14px;color:var(--muted)">Start serve.py to enable live ML forecast</div>
+        <div class="sub">${err.message}</div>
+      </div>`;
+    document.getElementById('forecast-page-sub').textContent =
+      'ML model · Open-Meteo weather · server offline';
+    // Still render an empty table
+    document.getElementById('forecast-tbody').innerHTML =
+      '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">No forecast data — run python serve.py</td></tr>';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// OBSERVATION — Water Area
+// ═══════════════════════════════════════════════════
+
+let waterData = null;
+
+async function loadWaterData() {
+  if (waterData) return waterData;
+  const resp = await fetch('data/results.json');
+  const json = await resp.json();
+  waterData = json.readings.filter(r => r.water_area_km2 != null);
+  return waterData;
+}
+
+async function initWaterSection() {
+  let readings;
+  try {
+    readings = await loadWaterData();
+  } catch {
+    document.getElementById('water-kpis').innerHTML =
+      '<div class="state-error">Failed to load water data.</div>';
+    return;
+  }
+
+  const latest = readings[readings.length - 1];
+  const prev   = readings[readings.length - 2];
+  const delta  = prev ? (latest.water_area_km2 - prev.water_area_km2) : 0;
+  const deltaClass = delta > 0 ? 'up' : delta < 0 ? 'down' : '';
+  const deltaStr   = (delta > 0 ? '+' : '') + delta.toFixed(2) + ' km²';
+
+  document.getElementById('water-kpis').innerHTML = `
+    <div class="kpi">
+      <div class="label">Latest Water Area</div>
+      <div class="value">${latest.water_area_km2.toFixed(2)}<span class="unit">km²</span></div>
+      <div class="sub ${deltaClass}">${deltaStr} vs previous</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Observation Date</div>
+      <div class="value" style="font-size:18px">${latest.date}</div>
+      <div class="sub">to ${latest.date_to || '—'}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Cloud Cover</div>
+      <div class="value">${latest.cloud_pct.toFixed(1)}<span class="unit">%</span></div>
+      <div class="sub">Valid pixels: ${latest.valid_pixels.toLocaleString()}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Elevation Est.</div>
+      <div class="value">${latest.elevation_m != null ? latest.elevation_m.toFixed(1) : '—'}<span class="unit">m</span></div>
+      <div class="sub">Surface elevation (area-rating)</div>
+    </div>
+  `;
+
+  const labels = readings.map(r => r.date);
+  const values = readings.map(r => r.water_area_km2);
+
+  makeChart('chart-water', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Water area (km²)',
+        data: values,
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59,130,246,0.1)',
+        borderWidth: 2,
+        pointRadius: 2,
+        fill: true,
+        tension: 0.3,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: {
+          ...CHART_DEFAULTS.plugins.tooltip,
+          callbacks: { label: ctx => ` ${ctx.parsed.y.toFixed(3)} km²` },
+        },
+      },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x },
+        y: {
+          ticks: { color: '#94a3b8', callback: v => v.toFixed(1) },
+          grid: { color: 'rgba(45,51,72,0.5)' },
+          title: { display: true, text: 'km²', color: '#94a3b8', font: { size: 11 } },
+        },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// OBSERVATION — Snow Cover
+// ═══════════════════════════════════════════════════
+
+let snowData = null;
+
+async function loadSnowData() {
+  if (snowData) return snowData;
+  const resp = await fetch('data/snow/snow_results.json');
+  const json = await resp.json();
+  snowData = json.readings || json;
+  return snowData;
+}
+
+async function initSnowSection() {
+  let readings;
+  try {
+    readings = await loadSnowData();
+  } catch {
+    document.getElementById('snow-kpis').innerHTML =
+      '<div class="state-error">Failed to load snow data.</div>';
+    return;
+  }
+
+  const sorted = readings.slice().sort((a, b) => a.date.localeCompare(b.date));
+  const latest = sorted[sorted.length - 1];
+
+  document.getElementById('snow-kpis').innerHTML = `
+    <div class="kpi">
+      <div class="label">Latest Snow Cover</div>
+      <div class="value">${(latest.snow_cover_pct || 0).toFixed(1)}<span class="unit">%</span></div>
+      <div class="sub" style="color:var(--snow)">Catchment covered</div>
+    </div>
+    <div class="kpi">
+      <div class="label">NDSI Mean</div>
+      <div class="value">${(latest.ndsi_mean || 0).toFixed(3)}</div>
+      <div class="sub">Normalized Difference Snow Index</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Observation Date</div>
+      <div class="value" style="font-size:18px">${latest.date || '—'}</div>
+      <div class="sub">Cloud cover: ${(latest.cloud_pct || 0).toFixed(1)}%</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Valid Pixels</div>
+      <div class="value">${(latest.valid_pixels || 0).toLocaleString()}</div>
+      <div class="sub">of ${(latest.total_pixels || 0).toLocaleString()} total</div>
+    </div>
+  `;
+
+  const labels = sorted.map(r => r.date);
+  const values = sorted.map(r => r.snow_cover_pct || 0);
+
+  makeChart('chart-snow', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Snow cover (%)',
+        data: values,
+        borderColor: '#93c5fd',
+        backgroundColor: 'rgba(147,197,253,0.15)',
+        borderWidth: 2,
+        pointRadius: 2,
+        fill: true,
+        tension: 0.3,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: {
+          ...CHART_DEFAULTS.plugins.tooltip,
+          callbacks: { label: ctx => ` ${ctx.parsed.y.toFixed(1)}% snow` },
+        },
+      },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x },
+        y: {
+          min: 0,
+          max: 100,
+          ticks: { color: '#94a3b8', callback: v => v + '%' },
+          grid: { color: 'rgba(45,51,72,0.5)' },
+        },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// OBSERVATION — InSAR
+// ═══════════════════════════════════════════════════
+
+let insarData = null;
+
+async function loadInsarData() {
+  if (insarData) return insarData;
+  const resp = await fetch('data/insar/ogosta_rel80_desc/geojson/index.json');
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  insarData = await resp.json();
+  return insarData;
+}
+
+async function initInsarSection() {
+  const container = document.getElementById('insar-content');
+  let epochs;
+  try {
+    epochs = await loadInsarData();
+  } catch (e) {
+    container.innerHTML = `
+      <div class="state-error" style="padding:20px 0">
+        InSAR data not available locally.<br>
+        <small style="color:var(--muted)">Run the InSAR pipeline to generate displacement epochs.</small>
+      </div>
+      <div class="sim-cta" style="margin-top:16px">
+        <div class="cta-text">
+          <h3>Full InSAR Viewer</h3>
+          <p>Interactive deformation map with time slider, point selection and cumulative displacement charts.</p>
+        </div>
+        <a class="btn-primary" href="viewer_insar.html" target="_blank">Open InSAR Viewer ↗</a>
+      </div>`;
+    return;
+  }
+
+  if (!epochs || !epochs.length) {
+    container.innerHTML = '<div class="state-error">No InSAR epochs found in index.</div>';
+    return;
+  }
+
+  const sorted = epochs.slice().sort((a, b) => a.date.localeCompare(b.date));
+  const first  = sorted[0].date;
+  const last   = sorted[sorted.length - 1].date;
+  const latest = sorted[sorted.length - 1];
+  const mmVals = sorted.map(e => e.mean_mm || 0);
+  const absMax = Math.max(...mmVals.map(Math.abs));
+
+  container.innerHTML = `
+    <div class="kpi-row" style="margin-bottom:0">
+      <div class="kpi">
+        <div class="label">Epochs</div>
+        <div class="value">${sorted.length}</div>
+        <div class="sub">Sentinel-1 acquisitions</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Date Range</div>
+        <div class="value" style="font-size:16px">${first}</div>
+        <div class="sub">→ ${last}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Latest Mean Disp.</div>
+        <div class="value">${(latest.mean_mm || 0).toFixed(1)}<span class="unit">mm</span></div>
+        <div class="sub ${latest.mean_mm > 0 ? 'up' : 'down'}">${latest.mean_mm > 0 ? '↑ uplift' : '↓ subsidence'}</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Max |Displacement|</div>
+        <div class="value">${absMax.toFixed(1)}<span class="unit">mm</span></div>
+        <div class="sub">over full period</div>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-top:16px">
+      <h3>Mean Vertical Displacement per Epoch</h3>
+      <div class="chart-wrap h260">
+        <canvas id="chart-insar"></canvas>
+      </div>
+    </div>
+    <div class="sim-cta" style="margin-top:0">
+      <div class="cta-text">
+        <h3>Full InSAR Viewer</h3>
+        <p>Interactive deformation map with time slider, point-level time series, and GeoJSON layers.</p>
+      </div>
+      <a class="btn-primary" href="viewer_insar.html" target="_blank">Open InSAR Viewer ↗</a>
+    </div>
+  `;
+
+  makeChart('chart-insar', {
+    type: 'bar',
+    data: {
+      labels: sorted.map(e => e.date),
+      datasets: [{
+        label: 'Mean displacement (mm)',
+        data: mmVals,
+        backgroundColor: mmVals.map(v => v >= 0 ? 'rgba(59,130,246,0.7)' : 'rgba(239,68,68,0.7)'),
+        borderColor:      mmVals.map(v => v >= 0 ? '#3b82f6' : '#ef4444'),
+        borderWidth: 1,
+        borderRadius: 3,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      scales: {
+        x: { ticks: { color: '#94a3b8', maxTicksLimit: 10 }, grid: { color: 'rgba(45,51,72,0.5)' } },
+        y: {
+          ticks: { color: '#94a3b8', callback: v => v.toFixed(1) + ' mm' },
+          grid: { color: 'rgba(45,51,72,0.5)' },
+        },
+      },
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: {
+          ...CHART_DEFAULTS.plugins.tooltip,
+          callbacks: { label: ctx => ` ${ctx.parsed.y.toFixed(2)} mm` },
+        },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// Load obs tab (only once)
+// ═══════════════════════════════════════════════════
+
+const obsLoaded = { water: false, snow: false, insar: false };
+
+function loadObsTab(tab) {
+  if (obsLoaded[tab]) return;
+  obsLoaded[tab] = true;
+  if (tab === 'water') initWaterSection();
+  if (tab === 'snow')  initSnowSection();
+  if (tab === 'insar') initInsarSection();
+}
+
+// ═══════════════════════════════════════════════════
+// SIMULATION — fetch latest bulletin data
+// ═══════════════════════════════════════════════════
+
+let simLoaded = false;
+
+async function initSimSection() {
+  if (simLoaded) return;
+  simLoaded = true;
+
+  let latest;
+  try {
+    const resp = await fetch('data/ogosta_volumes.json');
+    const json = await resp.json();
+    const readings = (json.readings || []).filter(r => r.volume_mm3 != null);
+    latest = readings[readings.length - 1];
+  } catch {
+    document.getElementById('sim-kpis').innerHTML =
+      '<div class="state-error">Failed to load bulletin data.</div>';
+    return;
+  }
+
+  if (!latest) {
+    document.getElementById('sim-kpis').innerHTML =
+      '<div class="state-error">No bulletin readings available.</div>';
+    return;
+  }
+
+  const netFlow = (latest.inflow_m3s || 0) - (latest.outflow_m3s || 0);
+  const netClass = netFlow > 0 ? 'up' : netFlow < 0 ? 'down' : '';
+
+  document.getElementById('sim-kpis').innerHTML = `
+    <div class="kpi">
+      <div class="label">Current Volume</div>
+      <div class="value">${latest.volume_mm3.toFixed(1)}<span class="unit">млн.м³</span></div>
+      <div class="sub">${latest.pct_total.toFixed(1)}% of total capacity</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Useful Fill</div>
+      <div class="value">${latest.pct_useful.toFixed(1)}<span class="unit">%</span></div>
+      <div class="sub">${latest.useful_volume_mm3.toFixed(1)} of 439 млн.м³</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Inflow</div>
+      <div class="value" style="color:var(--inflow)">${(latest.inflow_m3s||0).toFixed(3)}<span class="unit">m³/s</span></div>
+      <div class="sub">Latest bulletin</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Outflow</div>
+      <div class="value" style="color:var(--outflow)">${(latest.outflow_m3s||0).toFixed(3)}<span class="unit">m³/s</span></div>
+      <div class="sub">Latest bulletin</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Net Flow</div>
+      <div class="value">${netFlow.toFixed(3)}<span class="unit">m³/s</span></div>
+      <div class="sub ${netClass}">${netFlow > 0 ? '↑ filling' : netFlow < 0 ? '↓ draining' : 'balanced'}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Bulletin Date</div>
+      <div class="value" style="font-size:16px">${latest.date}</div>
+      <div class="sub">МОСВ daily bulletin</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════
+// HISTORIC DATA
+// ═══════════════════════════════════════════════════
+
+let histAllReadings = null;
+let histDays = 180;
+
+async function loadHistData() {
+  if (histAllReadings) return histAllReadings;
+  const resp = await fetch('data/ogosta_volumes.json');
+  const json = await resp.json();
+  histAllReadings = (json.readings || [])
+    .filter(r => r.volume_mm3 != null)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  return histAllReadings;
+}
+
+function filterByDays(readings, days) {
+  if (!days) return readings;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const cutStr = cutoff.toISOString().slice(0, 10);
+  return readings.filter(r => r.date >= cutStr);
+}
+
+function setHistRange(days) {
+  histDays = days;
+  document.querySelectorAll('#hist-range-selector .range-btn').forEach(btn => {
+    btn.classList.toggle('active', +btn.dataset.days === days);
+  });
+  renderHistCharts();
+}
+
+let histLoaded = false;
+
+async function initHistSection() {
+  if (histLoaded) return;
+  histLoaded = true;
+  try {
+    await loadHistData();
+    renderHistCharts();
+  } catch {
+    document.getElementById('hist-kpis').innerHTML =
+      '<div class="state-error">Failed to load historic data.</div>';
+  }
+}
+
+function renderHistCharts() {
+  const all = histAllReadings;
+  if (!all) return;
+
+  const data = filterByDays(all, histDays);
+  if (!data.length) return;
+
+  const latest = data[data.length - 1];
+  const first  = data[0];
+  const periodChange = latest.volume_mm3 - first.volume_mm3;
+  const periodClass  = periodChange >= 0 ? 'up' : 'down';
+
+  document.getElementById('hist-kpis').innerHTML = `
+    <div class="kpi">
+      <div class="label">Latest Volume</div>
+      <div class="value">${latest.volume_mm3.toFixed(1)}<span class="unit">млн.м³</span></div>
+      <div class="sub">${latest.pct_total.toFixed(1)}% of total · ${latest.date}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Period Change</div>
+      <div class="value">${periodChange > 0 ? '+' : ''}${periodChange.toFixed(1)}<span class="unit">млн.м³</span></div>
+      <div class="sub ${periodClass}">${histDays ? 'Last ' + histDays + ' days' : 'All time'}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Avg Inflow</div>
+      <div class="value" style="color:var(--inflow)">${(data.reduce((s,r) => s + (r.inflow_m3s||0), 0) / data.length).toFixed(2)}<span class="unit">m³/s</span></div>
+      <div class="sub">Period average</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Avg Outflow</div>
+      <div class="value" style="color:var(--outflow)">${(data.reduce((s,r) => s + (r.outflow_m3s||0), 0) / data.length).toFixed(2)}<span class="unit">m³/s</span></div>
+      <div class="sub">Period average</div>
+    </div>
+  `;
+
+  const labels  = data.map(r => r.date);
+  const volumes = data.map(r => r.volume_mm3);
+  const caps    = data.map(r => r.total_capacity_mm3 || 506);
+  const deads   = data.map(() => 67);
+  const inflows  = data.map(r => r.inflow_m3s  || 0);
+  const outflows = data.map(r => r.outflow_m3s || 0);
+  const nets     = data.map(r => (r.inflow_m3s || 0) - (r.outflow_m3s || 0));
+
+  // Volume chart
+  makeChart('chart-hist-volume', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Volume',
+          data: volumes,
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.1)',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: true,
+          tension: 0.2,
+          order: 1,
+        },
+        {
+          label: 'Total capacity',
+          data: caps,
+          borderColor: 'rgba(148,163,184,0.3)',
+          borderWidth: 1,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+          order: 2,
+        },
+        {
+          label: 'Dead volume',
+          data: deads,
+          borderColor: 'rgba(107,114,128,0.3)',
+          borderWidth: 1,
+          borderDash: [3, 3],
+          pointRadius: 0,
+          fill: false,
+          order: 2,
+        },
+      ],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        legend: {
+          display: true,
+          labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12 },
+        },
+        tooltip: {
+          ...CHART_DEFAULTS.plugins.tooltip,
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)} млн.м³` },
+        },
+      },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x },
+        y: {
+          ticks: { color: '#94a3b8', callback: v => v.toFixed(0) },
+          grid: { color: 'rgba(45,51,72,0.5)' },
+          title: { display: true, text: 'млн.м³', color: '#94a3b8', font: { size: 11 } },
+        },
+      },
+    },
+  });
+
+  // Flow chart
+  makeChart('chart-hist-flow', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Inflow',
+          data: inflows,
+          borderColor: '#4CAF50',
+          backgroundColor: 'rgba(76,175,80,0.08)',
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false,
+          tension: 0.2,
+        },
+        {
+          label: 'Outflow',
+          data: outflows,
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239,68,68,0.08)',
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false,
+          tension: 0.2,
+        },
+      ],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        legend: {
+          display: true,
+          labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12 },
+        },
+        tooltip: {
+          ...CHART_DEFAULTS.plugins.tooltip,
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)} m³/s` },
+        },
+      },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x },
+        y: {
+          ticks: { color: '#94a3b8', callback: v => v.toFixed(1) },
+          grid: { color: 'rgba(45,51,72,0.5)' },
+          title: { display: true, text: 'm³/s', color: '#94a3b8', font: { size: 11 } },
+        },
+      },
+    },
+  });
+
+  // Net flow bar chart
+  makeChart('chart-hist-net', {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Net flow',
+        data: nets,
+        backgroundColor: nets.map(v => v >= 0 ? 'rgba(76,175,80,0.7)' : 'rgba(239,68,68,0.7)'),
+        borderColor:      nets.map(v => v >= 0 ? '#4CAF50' : '#ef4444'),
+        borderWidth: 0,
+        borderRadius: 2,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: {
+          ...CHART_DEFAULTS.plugins.tooltip,
+          callbacks: { label: ctx => ` Net: ${ctx.parsed.y.toFixed(3)} m³/s` },
+        },
+      },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x },
+        y: {
+          ticks: { color: '#94a3b8', callback: v => v.toFixed(1) },
+          grid: { color: 'rgba(45,51,72,0.5)' },
+        },
+      },
+    },
+  });
+
+  // Table (latest 30 rows reversed)
+  const tableRows = data.slice(-30).reverse();
+  const tbody = document.getElementById('hist-table-body');
+  tbody.innerHTML = tableRows.map(r => {
+    const net = (r.inflow_m3s || 0) - (r.outflow_m3s || 0);
+    const netCls = net > 0 ? 'pos' : net < 0 ? 'neg' : '';
+    return `<tr>
+      <td>${r.date}</td>
+      <td>${r.volume_mm3.toFixed(1)}</td>
+      <td>${r.pct_total.toFixed(1)}%</td>
+      <td>${r.pct_useful.toFixed(1)}%</td>
+      <td class="pos">${(r.inflow_m3s||0).toFixed(3)}</td>
+      <td class="neg">${(r.outflow_m3s||0).toFixed(3)}</td>
+      <td class="${netCls}">${net > 0 ? '+' : ''}${net.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// Section switch — lazy load
+// ═══════════════════════════════════════════════════
+
+function switchSection(id) {
+  currentSection = id;
+
+  SECTIONS.forEach(s => {
+    const sec = document.getElementById(`sec-${s}`);
+    if (sec) sec.classList.toggle('active', s === id);
+  });
+
+  ['forecast', 'simulation', 'historic'].forEach(s => {
+    document.getElementById(`nav-${s}`).classList.toggle('active', s === id);
+  });
+  // deactivate all obs sub-items when switching away from observation
+  if (id !== 'observation') {
+    OBS_TABS.forEach(t => document.getElementById(`nav-${t}`).classList.remove('active'));
+  }
+
+  if (id === 'simulation') initSimSection();
+  if (id === 'historic')   initHistSection();
+}
+
+// ═══════════════════════════════════════════════════
+// Init
+// ═══════════════════════════════════════════════════
+
+initForecastSection();
+
+// Pre-load water section data on idle so it's ready
+if ('requestIdleCallback' in window) {
+  requestIdleCallback(() => {
+    loadWaterData().then(() => obsLoaded.water || null);
+  });
+}
+</script>
+</body>
+</html>

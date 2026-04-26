@@ -1,0 +1,20 @@
+{
+  "reservoir": "ogosta",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.412205+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 11.192,
+      "outflow_m3s": 9.086,
+      "volume_mm3": 334.736,
+      "total_capacity_mm3": 506.0,
+      "pct_total": 66.15,
+      "dead_volume_mm3": 67.0,
+      "useful_volume_mm3": 267.736,
+      "pct_useful": 60.99,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.412183+00:00"
+    }
+  ]
+}

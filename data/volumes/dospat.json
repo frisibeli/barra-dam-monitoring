@@ -1,0 +1,20 @@
+{
+  "reservoir": "dospat",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.424249+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 3.518,
+      "outflow_m3s": 5.974,
+      "volume_mm3": 382.658,
+      "total_capacity_mm3": 449.249,
+      "pct_total": 85.18,
+      "dead_volume_mm3": 14.907,
+      "useful_volume_mm3": 367.751,
+      "pct_useful": 84.67,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.424225+00:00"
+    }
+  ]
+}

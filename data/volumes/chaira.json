@@ -1,0 +1,20 @@
+{
+  "reservoir": "chaira",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.423300+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.0,
+      "outflow_m3s": 0.0,
+      "volume_mm3": 3.48,
+      "total_capacity_mm3": 5.5,
+      "pct_total": 63.28,
+      "dead_volume_mm3": 1.369,
+      "useful_volume_mm3": 2.111,
+      "pct_useful": 51.11,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.423277+00:00"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "reservoir": "asenovets",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.410877+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.845,
+      "outflow_m3s": 0.844,
+      "volume_mm3": 28.2,
+      "total_capacity_mm3": 28.2,
+      "pct_total": 100.0,
+      "dead_volume_mm3": 2.0,
+      "useful_volume_mm3": 26.2,
+      "pct_useful": 100.0,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.410852+00:00"
+    }
+  ]
+}

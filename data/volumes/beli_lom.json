@@ -1,0 +1,20 @@
+{
+  "reservoir": "beli_lom",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.421806+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.266,
+      "outflow_m3s": 0.069,
+      "volume_mm3": 7.196,
+      "total_capacity_mm3": 25.5,
+      "pct_total": 28.22,
+      "dead_volume_mm3": 3.2,
+      "useful_volume_mm3": 3.996,
+      "pct_useful": 17.92,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.421780+00:00"
+    }
+  ]
+}

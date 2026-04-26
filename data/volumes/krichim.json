@@ -1,0 +1,20 @@
+{
+  "reservoir": "krichim",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.424539+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 28.852,
+      "outflow_m3s": 21.843,
+      "volume_mm3": 19.71,
+      "total_capacity_mm3": 20.256,
+      "pct_total": 97.31,
+      "dead_volume_mm3": 1.73,
+      "useful_volume_mm3": 17.98,
+      "pct_useful": 97.06,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.424525+00:00"
+    }
+  ]
+}

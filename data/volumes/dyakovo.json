@@ -1,0 +1,20 @@
+{
+  "reservoir": "dyakovo",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.411175+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 1.416,
+      "outflow_m3s": 1.416,
+      "volume_mm3": 26.593,
+      "total_capacity_mm3": 35.4,
+      "pct_total": 75.12,
+      "dead_volume_mm3": 8.0,
+      "useful_volume_mm3": 18.593,
+      "pct_useful": 67.86,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.411156+00:00"
+    }
+  ]
+}

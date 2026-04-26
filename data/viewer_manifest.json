@@ -1,0 +1,934 @@
+{
+  "reservoir": "ogosta",
+  "bbox": {
+    "south": 43.347228,
+    "west": 23.111677,
+    "north": 43.401619,
+    "east": 23.215464
+  },
+  "image_size": [
+    512,
+    512
+  ],
+  "dates": [
+    {
+      "date": "2023-02-06",
+      "images": {
+        "true_color": "data/plots/2023-02-06/true_color.png",
+        "water_index": "data/plots/2023-02-06/water_index.png",
+        "water_mask": "data/plots/2023-02-06/water_mask.png",
+        "overlay": "data/plots/2023-02-06/overlay.png"
+      }
+    },
+    {
+      "date": "2023-02-12",
+      "images": {
+        "true_color": "data/plots/2023-02-12/true_color.png",
+        "water_index": "data/plots/2023-02-12/water_index.png",
+        "water_mask": "data/plots/2023-02-12/water_mask.png",
+        "overlay": "data/plots/2023-02-12/overlay.png"
+      }
+    },
+    {
+      "date": "2023-02-18",
+      "images": {
+        "true_color": "data/plots/2023-02-18/true_color.png",
+        "water_index": "data/plots/2023-02-18/water_index.png",
+        "water_mask": "data/plots/2023-02-18/water_mask.png",
+        "overlay": "data/plots/2023-02-18/overlay.png"
+      }
+    },
+    {
+      "date": "2023-03-14",
+      "images": {
+        "true_color": "data/plots/2023-03-14/true_color.png",
+        "water_index": "data/plots/2023-03-14/water_index.png",
+        "water_mask": "data/plots/2023-03-14/water_mask.png",
+        "overlay": "data/plots/2023-03-14/overlay.png"
+      }
+    },
+    {
+      "date": "2023-03-26",
+      "images": {
+        "true_color": "data/plots/2023-03-26/true_color.png",
+        "water_index": "data/plots/2023-03-26/water_index.png",
+        "water_mask": "data/plots/2023-03-26/water_mask.png",
+        "overlay": "data/plots/2023-03-26/overlay.png"
+      }
+    },
+    {
+      "date": "2023-04-19",
+      "images": {
+        "true_color": "data/plots/2023-04-19/true_color.png",
+        "water_index": "data/plots/2023-04-19/water_index.png",
+        "water_mask": "data/plots/2023-04-19/water_mask.png",
+        "overlay": "data/plots/2023-04-19/overlay.png"
+      }
+    },
+    {
+      "date": "2023-04-25",
+      "images": {
+        "true_color": "data/plots/2023-04-25/true_color.png",
+        "water_index": "data/plots/2023-04-25/water_index.png",
+        "water_mask": "data/plots/2023-04-25/water_mask.png",
+        "overlay": "data/plots/2023-04-25/overlay.png"
+      }
+    },
+    {
+      "date": "2023-05-19",
+      "images": {
+        "true_color": "data/plots/2023-05-19/true_color.png",
+        "water_index": "data/plots/2023-05-19/water_index.png",
+        "water_mask": "data/plots/2023-05-19/water_mask.png",
+        "overlay": "data/plots/2023-05-19/overlay.png"
+      }
+    },
+    {
+      "date": "2023-06-24",
+      "images": {
+        "true_color": "data/plots/2023-06-24/true_color.png",
+        "water_index": "data/plots/2023-06-24/water_index.png",
+        "water_mask": "data/plots/2023-06-24/water_mask.png",
+        "overlay": "data/plots/2023-06-24/overlay.png"
+      }
+    },
+    {
+      "date": "2023-07-06",
+      "images": {
+        "true_color": "data/plots/2023-07-06/true_color.png",
+        "water_index": "data/plots/2023-07-06/water_index.png",
+        "water_mask": "data/plots/2023-07-06/water_mask.png",
+        "overlay": "data/plots/2023-07-06/overlay.png"
+      }
+    },
+    {
+      "date": "2023-07-12",
+      "images": {
+        "true_color": "data/plots/2023-07-12/true_color.png",
+        "water_index": "data/plots/2023-07-12/water_index.png",
+        "water_mask": "data/plots/2023-07-12/water_mask.png",
+        "overlay": "data/plots/2023-07-12/overlay.png"
+      }
+    },
+    {
+      "date": "2023-07-18",
+      "images": {
+        "true_color": "data/plots/2023-07-18/true_color.png",
+        "water_index": "data/plots/2023-07-18/water_index.png",
+        "water_mask": "data/plots/2023-07-18/water_mask.png",
+        "overlay": "data/plots/2023-07-18/overlay.png"
+      }
+    },
+    {
+      "date": "2023-07-24",
+      "images": {
+        "true_color": "data/plots/2023-07-24/true_color.png",
+        "water_index": "data/plots/2023-07-24/water_index.png",
+        "water_mask": "data/plots/2023-07-24/water_mask.png",
+        "overlay": "data/plots/2023-07-24/overlay.png"
+      }
+    },
+    {
+      "date": "2023-07-30",
+      "images": {
+        "true_color": "data/plots/2023-07-30/true_color.png",
+        "water_index": "data/plots/2023-07-30/water_index.png",
+        "water_mask": "data/plots/2023-07-30/water_mask.png",
+        "overlay": "data/plots/2023-07-30/overlay.png"
+      }
+    },
+    {
+      "date": "2023-08-05",
+      "images": {
+        "true_color": "data/plots/2023-08-05/true_color.png",
+        "water_index": "data/plots/2023-08-05/water_index.png",
+        "water_mask": "data/plots/2023-08-05/water_mask.png",
+        "overlay": "data/plots/2023-08-05/overlay.png"
+      }
+    },
+    {
+      "date": "2023-08-11",
+      "images": {
+        "true_color": "data/plots/2023-08-11/true_color.png",
+        "water_index": "data/plots/2023-08-11/water_index.png",
+        "water_mask": "data/plots/2023-08-11/water_mask.png",
+        "overlay": "data/plots/2023-08-11/overlay.png"
+      }
+    },
+    {
+      "date": "2023-08-17",
+      "images": {
+        "true_color": "data/plots/2023-08-17/true_color.png",
+        "water_index": "data/plots/2023-08-17/water_index.png",
+        "water_mask": "data/plots/2023-08-17/water_mask.png",
+        "overlay": "data/plots/2023-08-17/overlay.png"
+      }
+    },
+    {
+      "date": "2023-08-23",
+      "images": {
+        "true_color": "data/plots/2023-08-23/true_color.png",
+        "water_index": "data/plots/2023-08-23/water_index.png",
+        "water_mask": "data/plots/2023-08-23/water_mask.png",
+        "overlay": "data/plots/2023-08-23/overlay.png"
+      }
+    },
+    {
+      "date": "2023-09-04",
+      "images": {
+        "true_color": "data/plots/2023-09-04/true_color.png",
+        "water_index": "data/plots/2023-09-04/water_index.png",
+        "water_mask": "data/plots/2023-09-04/water_mask.png",
+        "overlay": "data/plots/2023-09-04/overlay.png"
+      }
+    },
+    {
+      "date": "2023-09-10",
+      "images": {
+        "true_color": "data/plots/2023-09-10/true_color.png",
+        "water_index": "data/plots/2023-09-10/water_index.png",
+        "water_mask": "data/plots/2023-09-10/water_mask.png",
+        "overlay": "data/plots/2023-09-10/overlay.png"
+      }
+    },
+    {
+      "date": "2023-09-16",
+      "images": {
+        "true_color": "data/plots/2023-09-16/true_color.png",
+        "water_index": "data/plots/2023-09-16/water_index.png",
+        "water_mask": "data/plots/2023-09-16/water_mask.png",
+        "overlay": "data/plots/2023-09-16/overlay.png"
+      }
+    },
+    {
+      "date": "2023-09-28",
+      "images": {
+        "true_color": "data/plots/2023-09-28/true_color.png",
+        "water_index": "data/plots/2023-09-28/water_index.png",
+        "water_mask": "data/plots/2023-09-28/water_mask.png",
+        "overlay": "data/plots/2023-09-28/overlay.png"
+      }
+    },
+    {
+      "date": "2023-10-10",
+      "images": {
+        "true_color": "data/plots/2023-10-10/true_color.png",
+        "water_index": "data/plots/2023-10-10/water_index.png",
+        "water_mask": "data/plots/2023-10-10/water_mask.png",
+        "overlay": "data/plots/2023-10-10/overlay.png"
+      }
+    },
+    {
+      "date": "2023-10-28",
+      "images": {
+        "true_color": "data/plots/2023-10-28/true_color.png",
+        "water_index": "data/plots/2023-10-28/water_index.png",
+        "water_mask": "data/plots/2023-10-28/water_mask.png",
+        "overlay": "data/plots/2023-10-28/overlay.png"
+      }
+    },
+    {
+      "date": "2023-11-03",
+      "images": {
+        "true_color": "data/plots/2023-11-03/true_color.png",
+        "water_index": "data/plots/2023-11-03/water_index.png",
+        "water_mask": "data/plots/2023-11-03/water_mask.png",
+        "overlay": "data/plots/2023-11-03/overlay.png"
+      }
+    },
+    {
+      "date": "2023-11-09",
+      "images": {
+        "true_color": "data/plots/2023-11-09/true_color.png",
+        "water_index": "data/plots/2023-11-09/water_index.png",
+        "water_mask": "data/plots/2023-11-09/water_mask.png",
+        "overlay": "data/plots/2023-11-09/overlay.png"
+      }
+    },
+    {
+      "date": "2023-11-15",
+      "images": {
+        "true_color": "data/plots/2023-11-15/true_color.png",
+        "water_index": "data/plots/2023-11-15/water_index.png",
+        "water_mask": "data/plots/2023-11-15/water_mask.png",
+        "overlay": "data/plots/2023-11-15/overlay.png"
+      }
+    },
+    {
+      "date": "2023-12-03",
+      "images": {
+        "true_color": "data/plots/2023-12-03/true_color.png",
+        "water_index": "data/plots/2023-12-03/water_index.png",
+        "water_mask": "data/plots/2023-12-03/water_mask.png",
+        "overlay": "data/plots/2023-12-03/overlay.png"
+      }
+    },
+    {
+      "date": "2023-12-15",
+      "images": {
+        "true_color": "data/plots/2023-12-15/true_color.png",
+        "water_index": "data/plots/2023-12-15/water_index.png",
+        "water_mask": "data/plots/2023-12-15/water_mask.png",
+        "overlay": "data/plots/2023-12-15/overlay.png"
+      }
+    },
+    {
+      "date": "2023-12-27",
+      "images": {
+        "true_color": "data/plots/2023-12-27/true_color.png",
+        "water_index": "data/plots/2023-12-27/water_index.png",
+        "water_mask": "data/plots/2023-12-27/water_mask.png",
+        "overlay": "data/plots/2023-12-27/overlay.png"
+      }
+    },
+    {
+      "date": "2024-02-13",
+      "images": {
+        "true_color": "data/plots/2024-02-13/true_color.png",
+        "water_index": "data/plots/2024-02-13/water_index.png",
+        "water_mask": "data/plots/2024-02-13/water_mask.png",
+        "overlay": "data/plots/2024-02-13/overlay.png"
+      }
+    },
+    {
+      "date": "2024-02-19",
+      "images": {
+        "true_color": "data/plots/2024-02-19/true_color.png",
+        "water_index": "data/plots/2024-02-19/water_index.png",
+        "water_mask": "data/plots/2024-02-19/water_mask.png",
+        "overlay": "data/plots/2024-02-19/overlay.png"
+      }
+    },
+    {
+      "date": "2024-03-20",
+      "images": {
+        "true_color": "data/plots/2024-03-20/true_color.png",
+        "water_index": "data/plots/2024-03-20/water_index.png",
+        "water_mask": "data/plots/2024-03-20/water_mask.png",
+        "overlay": "data/plots/2024-03-20/overlay.png"
+      }
+    },
+    {
+      "date": "2024-03-26",
+      "images": {
+        "true_color": "data/plots/2024-03-26/true_color.png",
+        "water_index": "data/plots/2024-03-26/water_index.png",
+        "water_mask": "data/plots/2024-03-26/water_mask.png",
+        "overlay": "data/plots/2024-03-26/overlay.png"
+      }
+    },
+    {
+      "date": "2024-04-01",
+      "images": {
+        "true_color": "data/plots/2024-04-01/true_color.png",
+        "water_index": "data/plots/2024-04-01/water_index.png",
+        "water_mask": "data/plots/2024-04-01/water_mask.png",
+        "overlay": "data/plots/2024-04-01/overlay.png"
+      }
+    },
+    {
+      "date": "2024-04-07",
+      "images": {
+        "true_color": "data/plots/2024-04-07/true_color.png",
+        "water_index": "data/plots/2024-04-07/water_index.png",
+        "water_mask": "data/plots/2024-04-07/water_mask.png",
+        "overlay": "data/plots/2024-04-07/overlay.png"
+      }
+    },
+    {
+      "date": "2024-04-19",
+      "images": {
+        "true_color": "data/plots/2024-04-19/true_color.png",
+        "water_index": "data/plots/2024-04-19/water_index.png",
+        "water_mask": "data/plots/2024-04-19/water_mask.png",
+        "overlay": "data/plots/2024-04-19/overlay.png"
+      }
+    },
+    {
+      "date": "2024-05-25",
+      "images": {
+        "true_color": "data/plots/2024-05-25/true_color.png",
+        "water_index": "data/plots/2024-05-25/water_index.png",
+        "water_mask": "data/plots/2024-05-25/water_mask.png",
+        "overlay": "data/plots/2024-05-25/overlay.png"
+      }
+    },
+    {
+      "date": "2024-05-31",
+      "images": {
+        "true_color": "data/plots/2024-05-31/true_color.png",
+        "water_index": "data/plots/2024-05-31/water_index.png",
+        "water_mask": "data/plots/2024-05-31/water_mask.png",
+        "overlay": "data/plots/2024-05-31/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-06",
+      "images": {
+        "true_color": "data/plots/2024-06-06/true_color.png",
+        "water_index": "data/plots/2024-06-06/water_index.png",
+        "water_mask": "data/plots/2024-06-06/water_mask.png",
+        "overlay": "data/plots/2024-06-06/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-12",
+      "images": {
+        "true_color": "data/plots/2024-06-12/true_color.png",
+        "water_index": "data/plots/2024-06-12/water_index.png",
+        "water_mask": "data/plots/2024-06-12/water_mask.png",
+        "overlay": "data/plots/2024-06-12/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-18",
+      "images": {
+        "true_color": "data/plots/2024-06-18/true_color.png",
+        "water_index": "data/plots/2024-06-18/water_index.png",
+        "water_mask": "data/plots/2024-06-18/water_mask.png",
+        "overlay": "data/plots/2024-06-18/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-24",
+      "images": {
+        "true_color": "data/plots/2024-06-24/true_color.png",
+        "water_index": "data/plots/2024-06-24/water_index.png",
+        "water_mask": "data/plots/2024-06-24/water_mask.png",
+        "overlay": "data/plots/2024-06-24/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-30",
+      "images": {
+        "true_color": "data/plots/2024-06-30/true_color.png",
+        "water_index": "data/plots/2024-06-30/water_index.png",
+        "water_mask": "data/plots/2024-06-30/water_mask.png",
+        "overlay": "data/plots/2024-06-30/overlay.png"
+      }
+    },
+    {
+      "date": "2024-07-06",
+      "images": {
+        "true_color": "data/plots/2024-07-06/true_color.png",
+        "water_index": "data/plots/2024-07-06/water_index.png",
+        "water_mask": "data/plots/2024-07-06/water_mask.png",
+        "overlay": "data/plots/2024-07-06/overlay.png"
+      }
+    },
+    {
+      "date": "2024-07-12",
+      "images": {
+        "true_color": "data/plots/2024-07-12/true_color.png",
+        "water_index": "data/plots/2024-07-12/water_index.png",
+        "water_mask": "data/plots/2024-07-12/water_mask.png",
+        "overlay": "data/plots/2024-07-12/overlay.png"
+      }
+    },
+    {
+      "date": "2024-07-30",
+      "images": {
+        "true_color": "data/plots/2024-07-30/true_color.png",
+        "water_index": "data/plots/2024-07-30/water_index.png",
+        "water_mask": "data/plots/2024-07-30/water_mask.png",
+        "overlay": "data/plots/2024-07-30/overlay.png"
+      }
+    },
+    {
+      "date": "2024-08-05",
+      "images": {
+        "true_color": "data/plots/2024-08-05/true_color.png",
+        "water_index": "data/plots/2024-08-05/water_index.png",
+        "water_mask": "data/plots/2024-08-05/water_mask.png",
+        "overlay": "data/plots/2024-08-05/overlay.png"
+      }
+    },
+    {
+      "date": "2024-08-23",
+      "images": {
+        "true_color": "data/plots/2024-08-23/true_color.png",
+        "water_index": "data/plots/2024-08-23/water_index.png",
+        "water_mask": "data/plots/2024-08-23/water_mask.png",
+        "overlay": "data/plots/2024-08-23/overlay.png"
+      }
+    },
+    {
+      "date": "2024-08-29",
+      "images": {
+        "true_color": "data/plots/2024-08-29/true_color.png",
+        "water_index": "data/plots/2024-08-29/water_index.png",
+        "water_mask": "data/plots/2024-08-29/water_mask.png",
+        "overlay": "data/plots/2024-08-29/overlay.png"
+      }
+    },
+    {
+      "date": "2024-09-04",
+      "images": {
+        "true_color": "data/plots/2024-09-04/true_color.png",
+        "water_index": "data/plots/2024-09-04/water_index.png",
+        "water_mask": "data/plots/2024-09-04/water_mask.png",
+        "overlay": "data/plots/2024-09-04/overlay.png"
+      }
+    },
+    {
+      "date": "2024-09-16",
+      "images": {
+        "true_color": "data/plots/2024-09-16/true_color.png",
+        "water_index": "data/plots/2024-09-16/water_index.png",
+        "water_mask": "data/plots/2024-09-16/water_mask.png",
+        "overlay": "data/plots/2024-09-16/overlay.png"
+      }
+    },
+    {
+      "date": "2024-09-22",
+      "images": {
+        "true_color": "data/plots/2024-09-22/true_color.png",
+        "water_index": "data/plots/2024-09-22/water_index.png",
+        "water_mask": "data/plots/2024-09-22/water_mask.png",
+        "overlay": "data/plots/2024-09-22/overlay.png"
+      }
+    },
+    {
+      "date": "2024-10-10",
+      "images": {
+        "true_color": "data/plots/2024-10-10/true_color.png",
+        "water_index": "data/plots/2024-10-10/water_index.png",
+        "water_mask": "data/plots/2024-10-10/water_mask.png",
+        "overlay": "data/plots/2024-10-10/overlay.png"
+      }
+    },
+    {
+      "date": "2024-10-16",
+      "images": {
+        "true_color": "data/plots/2024-10-16/true_color.png",
+        "water_index": "data/plots/2024-10-16/water_index.png",
+        "water_mask": "data/plots/2024-10-16/water_mask.png",
+        "overlay": "data/plots/2024-10-16/overlay.png"
+      }
+    },
+    {
+      "date": "2024-11-03",
+      "images": {
+        "true_color": "data/plots/2024-11-03/true_color.png",
+        "water_index": "data/plots/2024-11-03/water_index.png",
+        "water_mask": "data/plots/2024-11-03/water_mask.png",
+        "overlay": "data/plots/2024-11-03/overlay.png"
+      }
+    },
+    {
+      "date": "2024-11-15",
+      "images": {
+        "true_color": "data/plots/2024-11-15/true_color.png",
+        "water_index": "data/plots/2024-11-15/water_index.png",
+        "water_mask": "data/plots/2024-11-15/water_mask.png",
+        "overlay": "data/plots/2024-11-15/overlay.png"
+      }
+    },
+    {
+      "date": "2024-11-21",
+      "images": {
+        "true_color": "data/plots/2024-11-21/true_color.png",
+        "water_index": "data/plots/2024-11-21/water_index.png",
+        "water_mask": "data/plots/2024-11-21/water_mask.png",
+        "overlay": "data/plots/2024-11-21/overlay.png"
+      }
+    },
+    {
+      "date": "2024-12-09",
+      "images": {
+        "true_color": "data/plots/2024-12-09/true_color.png",
+        "water_index": "data/plots/2024-12-09/water_index.png",
+        "water_mask": "data/plots/2024-12-09/water_mask.png",
+        "overlay": "data/plots/2024-12-09/overlay.png"
+      }
+    },
+    {
+      "date": "2024-12-27",
+      "images": {
+        "true_color": "data/plots/2024-12-27/true_color.png",
+        "water_index": "data/plots/2024-12-27/water_index.png",
+        "water_mask": "data/plots/2024-12-27/water_mask.png",
+        "overlay": "data/plots/2024-12-27/overlay.png"
+      }
+    },
+    {
+      "date": "2025-01-02",
+      "images": {
+        "true_color": "data/plots/2025-01-02/true_color.png",
+        "water_index": "data/plots/2025-01-02/water_index.png",
+        "water_mask": "data/plots/2025-01-02/water_mask.png",
+        "overlay": "data/plots/2025-01-02/overlay.png"
+      }
+    },
+    {
+      "date": "2025-01-14",
+      "images": {
+        "true_color": "data/plots/2025-01-14/true_color.png",
+        "water_index": "data/plots/2025-01-14/water_index.png",
+        "water_mask": "data/plots/2025-01-14/water_mask.png",
+        "overlay": "data/plots/2025-01-14/overlay.png"
+      }
+    },
+    {
+      "date": "2025-01-26",
+      "images": {
+        "true_color": "data/plots/2025-01-26/true_color.png",
+        "water_index": "data/plots/2025-01-26/water_index.png",
+        "water_mask": "data/plots/2025-01-26/water_mask.png",
+        "overlay": "data/plots/2025-01-26/overlay.png"
+      }
+    },
+    {
+      "date": "2025-02-01",
+      "images": {
+        "true_color": "data/plots/2025-02-01/true_color.png",
+        "water_index": "data/plots/2025-02-01/water_index.png",
+        "water_mask": "data/plots/2025-02-01/water_mask.png",
+        "overlay": "data/plots/2025-02-01/overlay.png"
+      }
+    },
+    {
+      "date": "2025-02-07",
+      "images": {
+        "true_color": "data/plots/2025-02-07/true_color.png",
+        "water_index": "data/plots/2025-02-07/water_index.png",
+        "water_mask": "data/plots/2025-02-07/water_mask.png",
+        "overlay": "data/plots/2025-02-07/overlay.png"
+      }
+    },
+    {
+      "date": "2025-02-19",
+      "images": {
+        "true_color": "data/plots/2025-02-19/true_color.png",
+        "water_index": "data/plots/2025-02-19/water_index.png",
+        "water_mask": "data/plots/2025-02-19/water_mask.png",
+        "overlay": "data/plots/2025-02-19/overlay.png"
+      }
+    },
+    {
+      "date": "2025-03-15",
+      "images": {
+        "true_color": "data/plots/2025-03-15/true_color.png",
+        "water_index": "data/plots/2025-03-15/water_index.png",
+        "water_mask": "data/plots/2025-03-15/water_mask.png",
+        "overlay": "data/plots/2025-03-15/overlay.png"
+      }
+    },
+    {
+      "date": "2025-04-14",
+      "images": {
+        "true_color": "data/plots/2025-04-14/true_color.png",
+        "water_index": "data/plots/2025-04-14/water_index.png",
+        "water_mask": "data/plots/2025-04-14/water_mask.png",
+        "overlay": "data/plots/2025-04-14/overlay.png"
+      }
+    },
+    {
+      "date": "2025-04-20",
+      "images": {
+        "true_color": "data/plots/2025-04-20/true_color.png",
+        "water_index": "data/plots/2025-04-20/water_index.png",
+        "water_mask": "data/plots/2025-04-20/water_mask.png",
+        "overlay": "data/plots/2025-04-20/overlay.png"
+      }
+    },
+    {
+      "date": "2025-04-26",
+      "images": {
+        "true_color": "data/plots/2025-04-26/true_color.png",
+        "water_index": "data/plots/2025-04-26/water_index.png",
+        "water_mask": "data/plots/2025-04-26/water_mask.png",
+        "overlay": "data/plots/2025-04-26/overlay.png"
+      }
+    },
+    {
+      "date": "2025-05-02",
+      "images": {
+        "true_color": "data/plots/2025-05-02/true_color.png",
+        "water_index": "data/plots/2025-05-02/water_index.png",
+        "water_mask": "data/plots/2025-05-02/water_mask.png",
+        "overlay": "data/plots/2025-05-02/overlay.png"
+      }
+    },
+    {
+      "date": "2025-05-26",
+      "images": {
+        "true_color": "data/plots/2025-05-26/true_color.png",
+        "water_index": "data/plots/2025-05-26/water_index.png",
+        "water_mask": "data/plots/2025-05-26/water_mask.png",
+        "overlay": "data/plots/2025-05-26/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-01",
+      "images": {
+        "true_color": "data/plots/2025-06-01/true_color.png",
+        "water_index": "data/plots/2025-06-01/water_index.png",
+        "water_mask": "data/plots/2025-06-01/water_mask.png",
+        "overlay": "data/plots/2025-06-01/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-07",
+      "images": {
+        "true_color": "data/plots/2025-06-07/true_color.png",
+        "water_index": "data/plots/2025-06-07/water_index.png",
+        "water_mask": "data/plots/2025-06-07/water_mask.png",
+        "overlay": "data/plots/2025-06-07/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-13",
+      "images": {
+        "true_color": "data/plots/2025-06-13/true_color.png",
+        "water_index": "data/plots/2025-06-13/water_index.png",
+        "water_mask": "data/plots/2025-06-13/water_mask.png",
+        "overlay": "data/plots/2025-06-13/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-19",
+      "images": {
+        "true_color": "data/plots/2025-06-19/true_color.png",
+        "water_index": "data/plots/2025-06-19/water_index.png",
+        "water_mask": "data/plots/2025-06-19/water_mask.png",
+        "overlay": "data/plots/2025-06-19/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-25",
+      "images": {
+        "true_color": "data/plots/2025-06-25/true_color.png",
+        "water_index": "data/plots/2025-06-25/water_index.png",
+        "water_mask": "data/plots/2025-06-25/water_mask.png",
+        "overlay": "data/plots/2025-06-25/overlay.png"
+      }
+    },
+    {
+      "date": "2025-07-01",
+      "images": {
+        "true_color": "data/plots/2025-07-01/true_color.png",
+        "water_index": "data/plots/2025-07-01/water_index.png",
+        "water_mask": "data/plots/2025-07-01/water_mask.png",
+        "overlay": "data/plots/2025-07-01/overlay.png"
+      }
+    },
+    {
+      "date": "2025-07-13",
+      "images": {
+        "true_color": "data/plots/2025-07-13/true_color.png",
+        "water_index": "data/plots/2025-07-13/water_index.png",
+        "water_mask": "data/plots/2025-07-13/water_mask.png",
+        "overlay": "data/plots/2025-07-13/overlay.png"
+      }
+    },
+    {
+      "date": "2025-07-19",
+      "images": {
+        "true_color": "data/plots/2025-07-19/true_color.png",
+        "water_index": "data/plots/2025-07-19/water_index.png",
+        "water_mask": "data/plots/2025-07-19/water_mask.png",
+        "overlay": "data/plots/2025-07-19/overlay.png"
+      }
+    },
+    {
+      "date": "2025-07-25",
+      "images": {
+        "true_color": "data/plots/2025-07-25/true_color.png",
+        "water_index": "data/plots/2025-07-25/water_index.png",
+        "water_mask": "data/plots/2025-07-25/water_mask.png",
+        "overlay": "data/plots/2025-07-25/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-06",
+      "images": {
+        "true_color": "data/plots/2025-08-06/true_color.png",
+        "water_index": "data/plots/2025-08-06/water_index.png",
+        "water_mask": "data/plots/2025-08-06/water_mask.png",
+        "overlay": "data/plots/2025-08-06/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-12",
+      "images": {
+        "true_color": "data/plots/2025-08-12/true_color.png",
+        "water_index": "data/plots/2025-08-12/water_index.png",
+        "water_mask": "data/plots/2025-08-12/water_mask.png",
+        "overlay": "data/plots/2025-08-12/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-18",
+      "images": {
+        "true_color": "data/plots/2025-08-18/true_color.png",
+        "water_index": "data/plots/2025-08-18/water_index.png",
+        "water_mask": "data/plots/2025-08-18/water_mask.png",
+        "overlay": "data/plots/2025-08-18/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-24",
+      "images": {
+        "true_color": "data/plots/2025-08-24/true_color.png",
+        "water_index": "data/plots/2025-08-24/water_index.png",
+        "water_mask": "data/plots/2025-08-24/water_mask.png",
+        "overlay": "data/plots/2025-08-24/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-30",
+      "images": {
+        "true_color": "data/plots/2025-08-30/true_color.png",
+        "water_index": "data/plots/2025-08-30/water_index.png",
+        "water_mask": "data/plots/2025-08-30/water_mask.png",
+        "overlay": "data/plots/2025-08-30/overlay.png"
+      }
+    },
+    {
+      "date": "2025-09-05",
+      "images": {
+        "true_color": "data/plots/2025-09-05/true_color.png",
+        "water_index": "data/plots/2025-09-05/water_index.png",
+        "water_mask": "data/plots/2025-09-05/water_mask.png",
+        "overlay": "data/plots/2025-09-05/overlay.png"
+      }
+    },
+    {
+      "date": "2025-09-11",
+      "images": {
+        "true_color": "data/plots/2025-09-11/true_color.png",
+        "water_index": "data/plots/2025-09-11/water_index.png",
+        "water_mask": "data/plots/2025-09-11/water_mask.png",
+        "overlay": "data/plots/2025-09-11/overlay.png"
+      }
+    },
+    {
+      "date": "2025-09-17",
+      "images": {
+        "true_color": "data/plots/2025-09-17/true_color.png",
+        "water_index": "data/plots/2025-09-17/water_index.png",
+        "water_mask": "data/plots/2025-09-17/water_mask.png",
+        "overlay": "data/plots/2025-09-17/overlay.png"
+      }
+    },
+    {
+      "date": "2025-09-23",
+      "images": {
+        "true_color": "data/plots/2025-09-23/true_color.png",
+        "water_index": "data/plots/2025-09-23/water_index.png",
+        "water_mask": "data/plots/2025-09-23/water_mask.png",
+        "overlay": "data/plots/2025-09-23/overlay.png"
+      }
+    },
+    {
+      "date": "2025-10-05",
+      "images": {
+        "true_color": "data/plots/2025-10-05/true_color.png",
+        "water_index": "data/plots/2025-10-05/water_index.png",
+        "water_mask": "data/plots/2025-10-05/water_mask.png",
+        "overlay": "data/plots/2025-10-05/overlay.png"
+      }
+    },
+    {
+      "date": "2025-10-17",
+      "images": {
+        "true_color": "data/plots/2025-10-17/true_color.png",
+        "water_index": "data/plots/2025-10-17/water_index.png",
+        "water_mask": "data/plots/2025-10-17/water_mask.png",
+        "overlay": "data/plots/2025-10-17/overlay.png"
+      }
+    },
+    {
+      "date": "2025-10-23",
+      "images": {
+        "true_color": "data/plots/2025-10-23/true_color.png",
+        "water_index": "data/plots/2025-10-23/water_index.png",
+        "water_mask": "data/plots/2025-10-23/water_mask.png",
+        "overlay": "data/plots/2025-10-23/overlay.png"
+      }
+    },
+    {
+      "date": "2025-10-29",
+      "images": {
+        "true_color": "data/plots/2025-10-29/true_color.png",
+        "water_index": "data/plots/2025-10-29/water_index.png",
+        "water_mask": "data/plots/2025-10-29/water_mask.png",
+        "overlay": "data/plots/2025-10-29/overlay.png"
+      }
+    },
+    {
+      "date": "2025-12-10",
+      "images": {
+        "true_color": "data/plots/2025-12-10/true_color.png",
+        "water_index": "data/plots/2025-12-10/water_index.png",
+        "water_mask": "data/plots/2025-12-10/water_mask.png",
+        "overlay": "data/plots/2025-12-10/overlay.png"
+      }
+    },
+    {
+      "date": "2025-12-22",
+      "images": {
+        "true_color": "data/plots/2025-12-22/true_color.png",
+        "water_index": "data/plots/2025-12-22/water_index.png",
+        "water_mask": "data/plots/2025-12-22/water_mask.png",
+        "overlay": "data/plots/2025-12-22/overlay.png"
+      }
+    },
+    {
+      "date": "2025-12-28",
+      "images": {
+        "true_color": "data/plots/2025-12-28/true_color.png",
+        "water_index": "data/plots/2025-12-28/water_index.png",
+        "water_mask": "data/plots/2025-12-28/water_mask.png",
+        "overlay": "data/plots/2025-12-28/overlay.png"
+      }
+    },
+    {
+      "date": "2026-01-09",
+      "images": {
+        "true_color": "data/plots/2026-01-09/true_color.png",
+        "water_index": "data/plots/2026-01-09/water_index.png",
+        "water_mask": "data/plots/2026-01-09/water_mask.png",
+        "overlay": "data/plots/2026-01-09/overlay.png"
+      }
+    },
+    {
+      "date": "2026-02-14",
+      "images": {
+        "true_color": "data/plots/2026-02-14/true_color.png",
+        "water_index": "data/plots/2026-02-14/water_index.png",
+        "water_mask": "data/plots/2026-02-14/water_mask.png",
+        "overlay": "data/plots/2026-02-14/overlay.png"
+      }
+    },
+    {
+      "date": "2026-04-03",
+      "images": {
+        "true_color": "data/plots/2026-04-03/true_color.png",
+        "water_index": "data/plots/2026-04-03/water_index.png",
+        "water_mask": "data/plots/2026-04-03/water_mask.png",
+        "overlay": "data/plots/2026-04-03/overlay.png"
+      }
+    },
+    {
+      "date": "2026-04-09",
+      "images": {
+        "true_color": "data/plots/2026-04-09/true_color.png",
+        "water_index": "data/plots/2026-04-09/water_index.png",
+        "water_mask": "data/plots/2026-04-09/water_mask.png",
+        "overlay": "data/plots/2026-04-09/overlay.png"
+      }
+    },
+    {
+      "date": "2026-04-15",
+      "images": {
+        "true_color": "data/plots/2026-04-15/true_color.png",
+        "water_index": "data/plots/2026-04-15/water_index.png",
+        "water_mask": "data/plots/2026-04-15/water_mask.png",
+        "overlay": "data/plots/2026-04-15/overlay.png"
+      }
+    }
+  ],
+  "water_threshold": 0.2
+}

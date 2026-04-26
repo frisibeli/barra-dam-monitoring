@@ -1,0 +1,1111 @@
+{
+  "catchment": "ogosta_upstream",
+  "bbox": {
+    "south": 43.112361,
+    "west": 22.746301,
+    "north": 43.516089,
+    "east": 23.233357
+  },
+  "image_size": [
+    512,
+    512
+  ],
+  "dates": [
+    {
+      "date": "2023-01-01",
+      "images": {
+        "true_color": "data/snow/plots/2023-01-01/true_color.png",
+        "ndsi": "data/snow/plots/2023-01-01/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-01-01/snow_mask.png",
+        "overlay": "data/snow/plots/2023-01-01/overlay.png"
+      }
+    },
+    {
+      "date": "2023-01-08",
+      "images": {
+        "true_color": "data/snow/plots/2023-01-08/true_color.png",
+        "ndsi": "data/snow/plots/2023-01-08/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-01-08/snow_mask.png",
+        "overlay": "data/snow/plots/2023-01-08/overlay.png"
+      }
+    },
+    {
+      "date": "2023-02-05",
+      "images": {
+        "true_color": "data/snow/plots/2023-02-05/true_color.png",
+        "ndsi": "data/snow/plots/2023-02-05/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-02-05/snow_mask.png",
+        "overlay": "data/snow/plots/2023-02-05/overlay.png"
+      }
+    },
+    {
+      "date": "2023-02-12",
+      "images": {
+        "true_color": "data/snow/plots/2023-02-12/true_color.png",
+        "ndsi": "data/snow/plots/2023-02-12/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-02-12/snow_mask.png",
+        "overlay": "data/snow/plots/2023-02-12/overlay.png"
+      }
+    },
+    {
+      "date": "2023-02-19",
+      "images": {
+        "true_color": "data/snow/plots/2023-02-19/true_color.png",
+        "ndsi": "data/snow/plots/2023-02-19/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-02-19/snow_mask.png",
+        "overlay": "data/snow/plots/2023-02-19/overlay.png"
+      }
+    },
+    {
+      "date": "2023-03-12",
+      "images": {
+        "true_color": "data/snow/plots/2023-03-12/true_color.png",
+        "ndsi": "data/snow/plots/2023-03-12/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-03-12/snow_mask.png",
+        "overlay": "data/snow/plots/2023-03-12/overlay.png"
+      }
+    },
+    {
+      "date": "2023-03-19",
+      "images": {
+        "true_color": "data/snow/plots/2023-03-19/true_color.png",
+        "ndsi": "data/snow/plots/2023-03-19/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-03-19/snow_mask.png",
+        "overlay": "data/snow/plots/2023-03-19/overlay.png"
+      }
+    },
+    {
+      "date": "2023-03-26",
+      "images": {
+        "true_color": "data/snow/plots/2023-03-26/true_color.png",
+        "ndsi": "data/snow/plots/2023-03-26/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-03-26/snow_mask.png",
+        "overlay": "data/snow/plots/2023-03-26/overlay.png"
+      }
+    },
+    {
+      "date": "2023-04-09",
+      "images": {
+        "true_color": "data/snow/plots/2023-04-09/true_color.png",
+        "ndsi": "data/snow/plots/2023-04-09/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-04-09/snow_mask.png",
+        "overlay": "data/snow/plots/2023-04-09/overlay.png"
+      }
+    },
+    {
+      "date": "2023-04-16",
+      "images": {
+        "true_color": "data/snow/plots/2023-04-16/true_color.png",
+        "ndsi": "data/snow/plots/2023-04-16/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-04-16/snow_mask.png",
+        "overlay": "data/snow/plots/2023-04-16/overlay.png"
+      }
+    },
+    {
+      "date": "2023-04-23",
+      "images": {
+        "true_color": "data/snow/plots/2023-04-23/true_color.png",
+        "ndsi": "data/snow/plots/2023-04-23/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-04-23/snow_mask.png",
+        "overlay": "data/snow/plots/2023-04-23/overlay.png"
+      }
+    },
+    {
+      "date": "2023-05-21",
+      "images": {
+        "true_color": "data/snow/plots/2023-05-21/true_color.png",
+        "ndsi": "data/snow/plots/2023-05-21/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-05-21/snow_mask.png",
+        "overlay": "data/snow/plots/2023-05-21/overlay.png"
+      }
+    },
+    {
+      "date": "2023-06-18",
+      "images": {
+        "true_color": "data/snow/plots/2023-06-18/true_color.png",
+        "ndsi": "data/snow/plots/2023-06-18/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-06-18/snow_mask.png",
+        "overlay": "data/snow/plots/2023-06-18/overlay.png"
+      }
+    },
+    {
+      "date": "2023-06-25",
+      "images": {
+        "true_color": "data/snow/plots/2023-06-25/true_color.png",
+        "ndsi": "data/snow/plots/2023-06-25/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-06-25/snow_mask.png",
+        "overlay": "data/snow/plots/2023-06-25/overlay.png"
+      }
+    },
+    {
+      "date": "2023-07-09",
+      "images": {
+        "true_color": "data/snow/plots/2023-07-09/true_color.png",
+        "ndsi": "data/snow/plots/2023-07-09/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-07-09/snow_mask.png",
+        "overlay": "data/snow/plots/2023-07-09/overlay.png"
+      }
+    },
+    {
+      "date": "2023-07-16",
+      "images": {
+        "true_color": "data/snow/plots/2023-07-16/true_color.png",
+        "ndsi": "data/snow/plots/2023-07-16/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-07-16/snow_mask.png",
+        "overlay": "data/snow/plots/2023-07-16/overlay.png"
+      }
+    },
+    {
+      "date": "2023-07-23",
+      "images": {
+        "true_color": "data/snow/plots/2023-07-23/true_color.png",
+        "ndsi": "data/snow/plots/2023-07-23/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-07-23/snow_mask.png",
+        "overlay": "data/snow/plots/2023-07-23/overlay.png"
+      }
+    },
+    {
+      "date": "2023-07-30",
+      "images": {
+        "true_color": "data/snow/plots/2023-07-30/true_color.png",
+        "ndsi": "data/snow/plots/2023-07-30/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-07-30/snow_mask.png",
+        "overlay": "data/snow/plots/2023-07-30/overlay.png"
+      }
+    },
+    {
+      "date": "2023-08-06",
+      "images": {
+        "true_color": "data/snow/plots/2023-08-06/true_color.png",
+        "ndsi": "data/snow/plots/2023-08-06/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-08-06/snow_mask.png",
+        "overlay": "data/snow/plots/2023-08-06/overlay.png"
+      }
+    },
+    {
+      "date": "2023-08-20",
+      "images": {
+        "true_color": "data/snow/plots/2023-08-20/true_color.png",
+        "ndsi": "data/snow/plots/2023-08-20/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-08-20/snow_mask.png",
+        "overlay": "data/snow/plots/2023-08-20/overlay.png"
+      }
+    },
+    {
+      "date": "2023-09-03",
+      "images": {
+        "true_color": "data/snow/plots/2023-09-03/true_color.png",
+        "ndsi": "data/snow/plots/2023-09-03/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-09-03/snow_mask.png",
+        "overlay": "data/snow/plots/2023-09-03/overlay.png"
+      }
+    },
+    {
+      "date": "2023-09-10",
+      "images": {
+        "true_color": "data/snow/plots/2023-09-10/true_color.png",
+        "ndsi": "data/snow/plots/2023-09-10/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-09-10/snow_mask.png",
+        "overlay": "data/snow/plots/2023-09-10/overlay.png"
+      }
+    },
+    {
+      "date": "2023-09-17",
+      "images": {
+        "true_color": "data/snow/plots/2023-09-17/true_color.png",
+        "ndsi": "data/snow/plots/2023-09-17/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-09-17/snow_mask.png",
+        "overlay": "data/snow/plots/2023-09-17/overlay.png"
+      }
+    },
+    {
+      "date": "2023-09-24",
+      "images": {
+        "true_color": "data/snow/plots/2023-09-24/true_color.png",
+        "ndsi": "data/snow/plots/2023-09-24/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-09-24/snow_mask.png",
+        "overlay": "data/snow/plots/2023-09-24/overlay.png"
+      }
+    },
+    {
+      "date": "2023-10-01",
+      "images": {
+        "true_color": "data/snow/plots/2023-10-01/true_color.png",
+        "ndsi": "data/snow/plots/2023-10-01/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-10-01/snow_mask.png",
+        "overlay": "data/snow/plots/2023-10-01/overlay.png"
+      }
+    },
+    {
+      "date": "2023-10-08",
+      "images": {
+        "true_color": "data/snow/plots/2023-10-08/true_color.png",
+        "ndsi": "data/snow/plots/2023-10-08/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-10-08/snow_mask.png",
+        "overlay": "data/snow/plots/2023-10-08/overlay.png"
+      }
+    },
+    {
+      "date": "2023-10-15",
+      "images": {
+        "true_color": "data/snow/plots/2023-10-15/true_color.png",
+        "ndsi": "data/snow/plots/2023-10-15/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-10-15/snow_mask.png",
+        "overlay": "data/snow/plots/2023-10-15/overlay.png"
+      }
+    },
+    {
+      "date": "2023-10-29",
+      "images": {
+        "true_color": "data/snow/plots/2023-10-29/true_color.png",
+        "ndsi": "data/snow/plots/2023-10-29/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-10-29/snow_mask.png",
+        "overlay": "data/snow/plots/2023-10-29/overlay.png"
+      }
+    },
+    {
+      "date": "2023-11-05",
+      "images": {
+        "true_color": "data/snow/plots/2023-11-05/true_color.png",
+        "ndsi": "data/snow/plots/2023-11-05/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-11-05/snow_mask.png",
+        "overlay": "data/snow/plots/2023-11-05/overlay.png"
+      }
+    },
+    {
+      "date": "2023-11-12",
+      "images": {
+        "true_color": "data/snow/plots/2023-11-12/true_color.png",
+        "ndsi": "data/snow/plots/2023-11-12/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-11-12/snow_mask.png",
+        "overlay": "data/snow/plots/2023-11-12/overlay.png"
+      }
+    },
+    {
+      "date": "2023-11-19",
+      "images": {
+        "true_color": "data/snow/plots/2023-11-19/true_color.png",
+        "ndsi": "data/snow/plots/2023-11-19/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-11-19/snow_mask.png",
+        "overlay": "data/snow/plots/2023-11-19/overlay.png"
+      }
+    },
+    {
+      "date": "2023-12-03",
+      "images": {
+        "true_color": "data/snow/plots/2023-12-03/true_color.png",
+        "ndsi": "data/snow/plots/2023-12-03/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-12-03/snow_mask.png",
+        "overlay": "data/snow/plots/2023-12-03/overlay.png"
+      }
+    },
+    {
+      "date": "2023-12-17",
+      "images": {
+        "true_color": "data/snow/plots/2023-12-17/true_color.png",
+        "ndsi": "data/snow/plots/2023-12-17/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-12-17/snow_mask.png",
+        "overlay": "data/snow/plots/2023-12-17/overlay.png"
+      }
+    },
+    {
+      "date": "2023-12-24",
+      "images": {
+        "true_color": "data/snow/plots/2023-12-24/true_color.png",
+        "ndsi": "data/snow/plots/2023-12-24/ndsi.png",
+        "snow_mask": "data/snow/plots/2023-12-24/snow_mask.png",
+        "overlay": "data/snow/plots/2023-12-24/overlay.png"
+      }
+    },
+    {
+      "date": "2024-01-07",
+      "images": {
+        "true_color": "data/snow/plots/2024-01-07/true_color.png",
+        "ndsi": "data/snow/plots/2024-01-07/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-01-07/snow_mask.png",
+        "overlay": "data/snow/plots/2024-01-07/overlay.png"
+      }
+    },
+    {
+      "date": "2024-01-21",
+      "images": {
+        "true_color": "data/snow/plots/2024-01-21/true_color.png",
+        "ndsi": "data/snow/plots/2024-01-21/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-01-21/snow_mask.png",
+        "overlay": "data/snow/plots/2024-01-21/overlay.png"
+      }
+    },
+    {
+      "date": "2024-02-11",
+      "images": {
+        "true_color": "data/snow/plots/2024-02-11/true_color.png",
+        "ndsi": "data/snow/plots/2024-02-11/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-02-11/snow_mask.png",
+        "overlay": "data/snow/plots/2024-02-11/overlay.png"
+      }
+    },
+    {
+      "date": "2024-02-18",
+      "images": {
+        "true_color": "data/snow/plots/2024-02-18/true_color.png",
+        "ndsi": "data/snow/plots/2024-02-18/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-02-18/snow_mask.png",
+        "overlay": "data/snow/plots/2024-02-18/overlay.png"
+      }
+    },
+    {
+      "date": "2024-03-17",
+      "images": {
+        "true_color": "data/snow/plots/2024-03-17/true_color.png",
+        "ndsi": "data/snow/plots/2024-03-17/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-03-17/snow_mask.png",
+        "overlay": "data/snow/plots/2024-03-17/overlay.png"
+      }
+    },
+    {
+      "date": "2024-03-24",
+      "images": {
+        "true_color": "data/snow/plots/2024-03-24/true_color.png",
+        "ndsi": "data/snow/plots/2024-03-24/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-03-24/snow_mask.png",
+        "overlay": "data/snow/plots/2024-03-24/overlay.png"
+      }
+    },
+    {
+      "date": "2024-03-31",
+      "images": {
+        "true_color": "data/snow/plots/2024-03-31/true_color.png",
+        "ndsi": "data/snow/plots/2024-03-31/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-03-31/snow_mask.png",
+        "overlay": "data/snow/plots/2024-03-31/overlay.png"
+      }
+    },
+    {
+      "date": "2024-04-07",
+      "images": {
+        "true_color": "data/snow/plots/2024-04-07/true_color.png",
+        "ndsi": "data/snow/plots/2024-04-07/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-04-07/snow_mask.png",
+        "overlay": "data/snow/plots/2024-04-07/overlay.png"
+      }
+    },
+    {
+      "date": "2024-05-12",
+      "images": {
+        "true_color": "data/snow/plots/2024-05-12/true_color.png",
+        "ndsi": "data/snow/plots/2024-05-12/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-05-12/snow_mask.png",
+        "overlay": "data/snow/plots/2024-05-12/overlay.png"
+      }
+    },
+    {
+      "date": "2024-05-19",
+      "images": {
+        "true_color": "data/snow/plots/2024-05-19/true_color.png",
+        "ndsi": "data/snow/plots/2024-05-19/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-05-19/snow_mask.png",
+        "overlay": "data/snow/plots/2024-05-19/overlay.png"
+      }
+    },
+    {
+      "date": "2024-05-26",
+      "images": {
+        "true_color": "data/snow/plots/2024-05-26/true_color.png",
+        "ndsi": "data/snow/plots/2024-05-26/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-05-26/snow_mask.png",
+        "overlay": "data/snow/plots/2024-05-26/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-02",
+      "images": {
+        "true_color": "data/snow/plots/2024-06-02/true_color.png",
+        "ndsi": "data/snow/plots/2024-06-02/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-06-02/snow_mask.png",
+        "overlay": "data/snow/plots/2024-06-02/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-09",
+      "images": {
+        "true_color": "data/snow/plots/2024-06-09/true_color.png",
+        "ndsi": "data/snow/plots/2024-06-09/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-06-09/snow_mask.png",
+        "overlay": "data/snow/plots/2024-06-09/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-16",
+      "images": {
+        "true_color": "data/snow/plots/2024-06-16/true_color.png",
+        "ndsi": "data/snow/plots/2024-06-16/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-06-16/snow_mask.png",
+        "overlay": "data/snow/plots/2024-06-16/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-23",
+      "images": {
+        "true_color": "data/snow/plots/2024-06-23/true_color.png",
+        "ndsi": "data/snow/plots/2024-06-23/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-06-23/snow_mask.png",
+        "overlay": "data/snow/plots/2024-06-23/overlay.png"
+      }
+    },
+    {
+      "date": "2024-06-30",
+      "images": {
+        "true_color": "data/snow/plots/2024-06-30/true_color.png",
+        "ndsi": "data/snow/plots/2024-06-30/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-06-30/snow_mask.png",
+        "overlay": "data/snow/plots/2024-06-30/overlay.png"
+      }
+    },
+    {
+      "date": "2024-07-07",
+      "images": {
+        "true_color": "data/snow/plots/2024-07-07/true_color.png",
+        "ndsi": "data/snow/plots/2024-07-07/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-07-07/snow_mask.png",
+        "overlay": "data/snow/plots/2024-07-07/overlay.png"
+      }
+    },
+    {
+      "date": "2024-07-14",
+      "images": {
+        "true_color": "data/snow/plots/2024-07-14/true_color.png",
+        "ndsi": "data/snow/plots/2024-07-14/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-07-14/snow_mask.png",
+        "overlay": "data/snow/plots/2024-07-14/overlay.png"
+      }
+    },
+    {
+      "date": "2024-07-21",
+      "images": {
+        "true_color": "data/snow/plots/2024-07-21/true_color.png",
+        "ndsi": "data/snow/plots/2024-07-21/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-07-21/snow_mask.png",
+        "overlay": "data/snow/plots/2024-07-21/overlay.png"
+      }
+    },
+    {
+      "date": "2024-07-28",
+      "images": {
+        "true_color": "data/snow/plots/2024-07-28/true_color.png",
+        "ndsi": "data/snow/plots/2024-07-28/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-07-28/snow_mask.png",
+        "overlay": "data/snow/plots/2024-07-28/overlay.png"
+      }
+    },
+    {
+      "date": "2024-08-04",
+      "images": {
+        "true_color": "data/snow/plots/2024-08-04/true_color.png",
+        "ndsi": "data/snow/plots/2024-08-04/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-08-04/snow_mask.png",
+        "overlay": "data/snow/plots/2024-08-04/overlay.png"
+      }
+    },
+    {
+      "date": "2024-08-11",
+      "images": {
+        "true_color": "data/snow/plots/2024-08-11/true_color.png",
+        "ndsi": "data/snow/plots/2024-08-11/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-08-11/snow_mask.png",
+        "overlay": "data/snow/plots/2024-08-11/overlay.png"
+      }
+    },
+    {
+      "date": "2024-08-18",
+      "images": {
+        "true_color": "data/snow/plots/2024-08-18/true_color.png",
+        "ndsi": "data/snow/plots/2024-08-18/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-08-18/snow_mask.png",
+        "overlay": "data/snow/plots/2024-08-18/overlay.png"
+      }
+    },
+    {
+      "date": "2024-08-25",
+      "images": {
+        "true_color": "data/snow/plots/2024-08-25/true_color.png",
+        "ndsi": "data/snow/plots/2024-08-25/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-08-25/snow_mask.png",
+        "overlay": "data/snow/plots/2024-08-25/overlay.png"
+      }
+    },
+    {
+      "date": "2024-09-01",
+      "images": {
+        "true_color": "data/snow/plots/2024-09-01/true_color.png",
+        "ndsi": "data/snow/plots/2024-09-01/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-09-01/snow_mask.png",
+        "overlay": "data/snow/plots/2024-09-01/overlay.png"
+      }
+    },
+    {
+      "date": "2024-09-08",
+      "images": {
+        "true_color": "data/snow/plots/2024-09-08/true_color.png",
+        "ndsi": "data/snow/plots/2024-09-08/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-09-08/snow_mask.png",
+        "overlay": "data/snow/plots/2024-09-08/overlay.png"
+      }
+    },
+    {
+      "date": "2024-09-15",
+      "images": {
+        "true_color": "data/snow/plots/2024-09-15/true_color.png",
+        "ndsi": "data/snow/plots/2024-09-15/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-09-15/snow_mask.png",
+        "overlay": "data/snow/plots/2024-09-15/overlay.png"
+      }
+    },
+    {
+      "date": "2024-09-22",
+      "images": {
+        "true_color": "data/snow/plots/2024-09-22/true_color.png",
+        "ndsi": "data/snow/plots/2024-09-22/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-09-22/snow_mask.png",
+        "overlay": "data/snow/plots/2024-09-22/overlay.png"
+      }
+    },
+    {
+      "date": "2024-10-13",
+      "images": {
+        "true_color": "data/snow/plots/2024-10-13/true_color.png",
+        "ndsi": "data/snow/plots/2024-10-13/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-10-13/snow_mask.png",
+        "overlay": "data/snow/plots/2024-10-13/overlay.png"
+      }
+    },
+    {
+      "date": "2024-10-27",
+      "images": {
+        "true_color": "data/snow/plots/2024-10-27/true_color.png",
+        "ndsi": "data/snow/plots/2024-10-27/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-10-27/snow_mask.png",
+        "overlay": "data/snow/plots/2024-10-27/overlay.png"
+      }
+    },
+    {
+      "date": "2024-11-03",
+      "images": {
+        "true_color": "data/snow/plots/2024-11-03/true_color.png",
+        "ndsi": "data/snow/plots/2024-11-03/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-11-03/snow_mask.png",
+        "overlay": "data/snow/plots/2024-11-03/overlay.png"
+      }
+    },
+    {
+      "date": "2024-11-17",
+      "images": {
+        "true_color": "data/snow/plots/2024-11-17/true_color.png",
+        "ndsi": "data/snow/plots/2024-11-17/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-11-17/snow_mask.png",
+        "overlay": "data/snow/plots/2024-11-17/overlay.png"
+      }
+    },
+    {
+      "date": "2024-12-01",
+      "images": {
+        "true_color": "data/snow/plots/2024-12-01/true_color.png",
+        "ndsi": "data/snow/plots/2024-12-01/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-12-01/snow_mask.png",
+        "overlay": "data/snow/plots/2024-12-01/overlay.png"
+      }
+    },
+    {
+      "date": "2024-12-08",
+      "images": {
+        "true_color": "data/snow/plots/2024-12-08/true_color.png",
+        "ndsi": "data/snow/plots/2024-12-08/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-12-08/snow_mask.png",
+        "overlay": "data/snow/plots/2024-12-08/overlay.png"
+      }
+    },
+    {
+      "date": "2024-12-15",
+      "images": {
+        "true_color": "data/snow/plots/2024-12-15/true_color.png",
+        "ndsi": "data/snow/plots/2024-12-15/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-12-15/snow_mask.png",
+        "overlay": "data/snow/plots/2024-12-15/overlay.png"
+      }
+    },
+    {
+      "date": "2024-12-29",
+      "images": {
+        "true_color": "data/snow/plots/2024-12-29/true_color.png",
+        "ndsi": "data/snow/plots/2024-12-29/ndsi.png",
+        "snow_mask": "data/snow/plots/2024-12-29/snow_mask.png",
+        "overlay": "data/snow/plots/2024-12-29/overlay.png"
+      }
+    },
+    {
+      "date": "2025-01-12",
+      "images": {
+        "true_color": "data/snow/plots/2025-01-12/true_color.png",
+        "ndsi": "data/snow/plots/2025-01-12/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-01-12/snow_mask.png",
+        "overlay": "data/snow/plots/2025-01-12/overlay.png"
+      }
+    },
+    {
+      "date": "2025-01-26",
+      "images": {
+        "true_color": "data/snow/plots/2025-01-26/true_color.png",
+        "ndsi": "data/snow/plots/2025-01-26/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-01-26/snow_mask.png",
+        "overlay": "data/snow/plots/2025-01-26/overlay.png"
+      }
+    },
+    {
+      "date": "2025-02-09",
+      "images": {
+        "true_color": "data/snow/plots/2025-02-09/true_color.png",
+        "ndsi": "data/snow/plots/2025-02-09/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-02-09/snow_mask.png",
+        "overlay": "data/snow/plots/2025-02-09/overlay.png"
+      }
+    },
+    {
+      "date": "2025-02-16",
+      "images": {
+        "true_color": "data/snow/plots/2025-02-16/true_color.png",
+        "ndsi": "data/snow/plots/2025-02-16/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-02-16/snow_mask.png",
+        "overlay": "data/snow/plots/2025-02-16/overlay.png"
+      }
+    },
+    {
+      "date": "2025-03-02",
+      "images": {
+        "true_color": "data/snow/plots/2025-03-02/true_color.png",
+        "ndsi": "data/snow/plots/2025-03-02/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-03-02/snow_mask.png",
+        "overlay": "data/snow/plots/2025-03-02/overlay.png"
+      }
+    },
+    {
+      "date": "2025-03-16",
+      "images": {
+        "true_color": "data/snow/plots/2025-03-16/true_color.png",
+        "ndsi": "data/snow/plots/2025-03-16/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-03-16/snow_mask.png",
+        "overlay": "data/snow/plots/2025-03-16/overlay.png"
+      }
+    },
+    {
+      "date": "2025-04-13",
+      "images": {
+        "true_color": "data/snow/plots/2025-04-13/true_color.png",
+        "ndsi": "data/snow/plots/2025-04-13/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-04-13/snow_mask.png",
+        "overlay": "data/snow/plots/2025-04-13/overlay.png"
+      }
+    },
+    {
+      "date": "2025-04-20",
+      "images": {
+        "true_color": "data/snow/plots/2025-04-20/true_color.png",
+        "ndsi": "data/snow/plots/2025-04-20/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-04-20/snow_mask.png",
+        "overlay": "data/snow/plots/2025-04-20/overlay.png"
+      }
+    },
+    {
+      "date": "2025-04-27",
+      "images": {
+        "true_color": "data/snow/plots/2025-04-27/true_color.png",
+        "ndsi": "data/snow/plots/2025-04-27/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-04-27/snow_mask.png",
+        "overlay": "data/snow/plots/2025-04-27/overlay.png"
+      }
+    },
+    {
+      "date": "2025-05-18",
+      "images": {
+        "true_color": "data/snow/plots/2025-05-18/true_color.png",
+        "ndsi": "data/snow/plots/2025-05-18/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-05-18/snow_mask.png",
+        "overlay": "data/snow/plots/2025-05-18/overlay.png"
+      }
+    },
+    {
+      "date": "2025-05-25",
+      "images": {
+        "true_color": "data/snow/plots/2025-05-25/true_color.png",
+        "ndsi": "data/snow/plots/2025-05-25/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-05-25/snow_mask.png",
+        "overlay": "data/snow/plots/2025-05-25/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-01",
+      "images": {
+        "true_color": "data/snow/plots/2025-06-01/true_color.png",
+        "ndsi": "data/snow/plots/2025-06-01/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-06-01/snow_mask.png",
+        "overlay": "data/snow/plots/2025-06-01/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-08",
+      "images": {
+        "true_color": "data/snow/plots/2025-06-08/true_color.png",
+        "ndsi": "data/snow/plots/2025-06-08/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-06-08/snow_mask.png",
+        "overlay": "data/snow/plots/2025-06-08/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-15",
+      "images": {
+        "true_color": "data/snow/plots/2025-06-15/true_color.png",
+        "ndsi": "data/snow/plots/2025-06-15/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-06-15/snow_mask.png",
+        "overlay": "data/snow/plots/2025-06-15/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-22",
+      "images": {
+        "true_color": "data/snow/plots/2025-06-22/true_color.png",
+        "ndsi": "data/snow/plots/2025-06-22/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-06-22/snow_mask.png",
+        "overlay": "data/snow/plots/2025-06-22/overlay.png"
+      }
+    },
+    {
+      "date": "2025-06-29",
+      "images": {
+        "true_color": "data/snow/plots/2025-06-29/true_color.png",
+        "ndsi": "data/snow/plots/2025-06-29/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-06-29/snow_mask.png",
+        "overlay": "data/snow/plots/2025-06-29/overlay.png"
+      }
+    },
+    {
+      "date": "2025-07-06",
+      "images": {
+        "true_color": "data/snow/plots/2025-07-06/true_color.png",
+        "ndsi": "data/snow/plots/2025-07-06/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-07-06/snow_mask.png",
+        "overlay": "data/snow/plots/2025-07-06/overlay.png"
+      }
+    },
+    {
+      "date": "2025-07-13",
+      "images": {
+        "true_color": "data/snow/plots/2025-07-13/true_color.png",
+        "ndsi": "data/snow/plots/2025-07-13/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-07-13/snow_mask.png",
+        "overlay": "data/snow/plots/2025-07-13/overlay.png"
+      }
+    },
+    {
+      "date": "2025-07-20",
+      "images": {
+        "true_color": "data/snow/plots/2025-07-20/true_color.png",
+        "ndsi": "data/snow/plots/2025-07-20/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-07-20/snow_mask.png",
+        "overlay": "data/snow/plots/2025-07-20/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-03",
+      "images": {
+        "true_color": "data/snow/plots/2025-08-03/true_color.png",
+        "ndsi": "data/snow/plots/2025-08-03/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-08-03/snow_mask.png",
+        "overlay": "data/snow/plots/2025-08-03/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-10",
+      "images": {
+        "true_color": "data/snow/plots/2025-08-10/true_color.png",
+        "ndsi": "data/snow/plots/2025-08-10/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-08-10/snow_mask.png",
+        "overlay": "data/snow/plots/2025-08-10/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-17",
+      "images": {
+        "true_color": "data/snow/plots/2025-08-17/true_color.png",
+        "ndsi": "data/snow/plots/2025-08-17/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-08-17/snow_mask.png",
+        "overlay": "data/snow/plots/2025-08-17/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-24",
+      "images": {
+        "true_color": "data/snow/plots/2025-08-24/true_color.png",
+        "ndsi": "data/snow/plots/2025-08-24/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-08-24/snow_mask.png",
+        "overlay": "data/snow/plots/2025-08-24/overlay.png"
+      }
+    },
+    {
+      "date": "2025-08-31",
+      "images": {
+        "true_color": "data/snow/plots/2025-08-31/true_color.png",
+        "ndsi": "data/snow/plots/2025-08-31/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-08-31/snow_mask.png",
+        "overlay": "data/snow/plots/2025-08-31/overlay.png"
+      }
+    },
+    {
+      "date": "2025-09-07",
+      "images": {
+        "true_color": "data/snow/plots/2025-09-07/true_color.png",
+        "ndsi": "data/snow/plots/2025-09-07/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-09-07/snow_mask.png",
+        "overlay": "data/snow/plots/2025-09-07/overlay.png"
+      }
+    },
+    {
+      "date": "2025-09-14",
+      "images": {
+        "true_color": "data/snow/plots/2025-09-14/true_color.png",
+        "ndsi": "data/snow/plots/2025-09-14/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-09-14/snow_mask.png",
+        "overlay": "data/snow/plots/2025-09-14/overlay.png"
+      }
+    },
+    {
+      "date": "2025-09-21",
+      "images": {
+        "true_color": "data/snow/plots/2025-09-21/true_color.png",
+        "ndsi": "data/snow/plots/2025-09-21/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-09-21/snow_mask.png",
+        "overlay": "data/snow/plots/2025-09-21/overlay.png"
+      }
+    },
+    {
+      "date": "2025-10-05",
+      "images": {
+        "true_color": "data/snow/plots/2025-10-05/true_color.png",
+        "ndsi": "data/snow/plots/2025-10-05/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-10-05/snow_mask.png",
+        "overlay": "data/snow/plots/2025-10-05/overlay.png"
+      }
+    },
+    {
+      "date": "2025-10-12",
+      "images": {
+        "true_color": "data/snow/plots/2025-10-12/true_color.png",
+        "ndsi": "data/snow/plots/2025-10-12/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-10-12/snow_mask.png",
+        "overlay": "data/snow/plots/2025-10-12/overlay.png"
+      }
+    },
+    {
+      "date": "2025-10-19",
+      "images": {
+        "true_color": "data/snow/plots/2025-10-19/true_color.png",
+        "ndsi": "data/snow/plots/2025-10-19/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-10-19/snow_mask.png",
+        "overlay": "data/snow/plots/2025-10-19/overlay.png"
+      }
+    },
+    {
+      "date": "2025-10-26",
+      "images": {
+        "true_color": "data/snow/plots/2025-10-26/true_color.png",
+        "ndsi": "data/snow/plots/2025-10-26/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-10-26/snow_mask.png",
+        "overlay": "data/snow/plots/2025-10-26/overlay.png"
+      }
+    },
+    {
+      "date": "2025-11-09",
+      "images": {
+        "true_color": "data/snow/plots/2025-11-09/true_color.png",
+        "ndsi": "data/snow/plots/2025-11-09/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-11-09/snow_mask.png",
+        "overlay": "data/snow/plots/2025-11-09/overlay.png"
+      }
+    },
+    {
+      "date": "2025-12-07",
+      "images": {
+        "true_color": "data/snow/plots/2025-12-07/true_color.png",
+        "ndsi": "data/snow/plots/2025-12-07/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-12-07/snow_mask.png",
+        "overlay": "data/snow/plots/2025-12-07/overlay.png"
+      }
+    },
+    {
+      "date": "2025-12-21",
+      "images": {
+        "true_color": "data/snow/plots/2025-12-21/true_color.png",
+        "ndsi": "data/snow/plots/2025-12-21/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-12-21/snow_mask.png",
+        "overlay": "data/snow/plots/2025-12-21/overlay.png"
+      }
+    },
+    {
+      "date": "2025-12-28",
+      "images": {
+        "true_color": "data/snow/plots/2025-12-28/true_color.png",
+        "ndsi": "data/snow/plots/2025-12-28/ndsi.png",
+        "snow_mask": "data/snow/plots/2025-12-28/snow_mask.png",
+        "overlay": "data/snow/plots/2025-12-28/overlay.png"
+      }
+    },
+    {
+      "date": "2026-01-11",
+      "images": {
+        "true_color": "data/snow/plots/2026-01-11/true_color.png",
+        "ndsi": "data/snow/plots/2026-01-11/ndsi.png",
+        "snow_mask": "data/snow/plots/2026-01-11/snow_mask.png",
+        "overlay": "data/snow/plots/2026-01-11/overlay.png"
+      }
+    },
+    {
+      "date": "2026-02-15",
+      "images": {
+        "true_color": "data/snow/plots/2026-02-15/true_color.png",
+        "ndsi": "data/snow/plots/2026-02-15/ndsi.png",
+        "snow_mask": "data/snow/plots/2026-02-15/snow_mask.png",
+        "overlay": "data/snow/plots/2026-02-15/overlay.png"
+      }
+    },
+    {
+      "date": "2026-02-22",
+      "images": {
+        "true_color": "data/snow/plots/2026-02-22/true_color.png",
+        "ndsi": "data/snow/plots/2026-02-22/ndsi.png",
+        "snow_mask": "data/snow/plots/2026-02-22/snow_mask.png",
+        "overlay": "data/snow/plots/2026-02-22/overlay.png"
+      }
+    },
+    {
+      "date": "2026-03-08",
+      "images": {
+        "true_color": "data/snow/plots/2026-03-08/true_color.png",
+        "ndsi": "data/snow/plots/2026-03-08/ndsi.png",
+        "snow_mask": "data/snow/plots/2026-03-08/snow_mask.png",
+        "overlay": "data/snow/plots/2026-03-08/overlay.png"
+      }
+    },
+    {
+      "date": "2026-03-15",
+      "images": {
+        "true_color": "data/snow/plots/2026-03-15/true_color.png",
+        "ndsi": "data/snow/plots/2026-03-15/ndsi.png",
+        "snow_mask": "data/snow/plots/2026-03-15/snow_mask.png",
+        "overlay": "data/snow/plots/2026-03-15/overlay.png"
+      }
+    },
+    {
+      "date": "2026-04-05",
+      "images": {
+        "true_color": "data/snow/plots/2026-04-05/true_color.png",
+        "ndsi": "data/snow/plots/2026-04-05/ndsi.png",
+        "snow_mask": "data/snow/plots/2026-04-05/snow_mask.png",
+        "overlay": "data/snow/plots/2026-04-05/overlay.png"
+      }
+    },
+    {
+      "date": "2026-04-12",
+      "images": {
+        "true_color": "data/snow/plots/2026-04-12/true_color.png",
+        "ndsi": "data/snow/plots/2026-04-12/ndsi.png",
+        "snow_mask": "data/snow/plots/2026-04-12/snow_mask.png",
+        "overlay": "data/snow/plots/2026-04-12/overlay.png"
+      }
+    },
+    {
+      "date": "2026-04-15",
+      "images": {
+        "true_color": "data/snow/plots/2026-04-15/true_color.png",
+        "ndsi": "data/snow/plots/2026-04-15/ndsi.png",
+        "snow_mask": "data/snow/plots/2026-04-15/snow_mask.png",
+        "overlay": "data/snow/plots/2026-04-15/overlay.png"
+      }
+    }
+  ],
+  "snow_threshold": 0.4,
+  "polygon": [
+    [
+      43.112361,
+      23.19419
+    ],
+    [
+      43.119098,
+      23.119766
+    ],
+    [
+      43.198462,
+      23.020869
+    ],
+    [
+      43.190451,
+      23.004828
+    ],
+    [
+      43.202277,
+      22.98283
+    ],
+    [
+      43.203505,
+      22.942947
+    ],
+    [
+      43.22594,
+      22.894912
+    ],
+    [
+      43.268177,
+      22.867523
+    ],
+    [
+      43.275655,
+      22.847505
+    ],
+    [
+      43.330639,
+      22.824589
+    ],
+    [
+      43.340519,
+      22.799743
+    ],
+    [
+      43.38577,
+      22.746301
+    ],
+    [
+      43.516089,
+      22.837114
+    ],
+    [
+      43.480774,
+      23.006725
+    ],
+    [
+      43.431634,
+      23.094757
+    ],
+    [
+      43.403937,
+      23.220973
+    ],
+    [
+      43.358924,
+      23.208649
+    ],
+    [
+      43.242254,
+      23.233357
+    ],
+    [
+      43.112361,
+      23.19419
+    ]
+  ]
+}

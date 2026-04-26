@@ -1,0 +1,20 @@
+{
+  "reservoir": "batak",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.424155+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 16.15,
+      "outflow_m3s": 0.696,
+      "volume_mm3": 243.054,
+      "total_capacity_mm3": 310.298,
+      "pct_total": 78.33,
+      "dead_volume_mm3": 19.95,
+      "useful_volume_mm3": 223.104,
+      "pct_useful": 76.84,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.424140+00:00"
+    }
+  ]
+}

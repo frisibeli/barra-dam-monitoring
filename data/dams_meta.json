@@ -1,0 +1,470 @@
+[
+  {
+    "id": "iskar",
+    "name_bg": "Искър",
+    "name_en": "Iskar",
+    "lat": 42.471,
+    "lon": 23.573,
+    "capacity_mm3": 655.252,
+    "province": "Sofia City"
+  },
+  {
+    "id": "beli_iskar",
+    "name_bg": "Бели Искър",
+    "name_en": "Beli Iskar",
+    "lat": 42.133,
+    "lon": 23.567,
+    "capacity_mm3": 15.08,
+    "province": "Sofia Province"
+  },
+  {
+    "id": "srechenska_bara",
+    "name_bg": "Среченска бара",
+    "name_en": "Srechenska Bara",
+    "lat": 43.206,
+    "lon": 23.204,
+    "capacity_mm3": 15.5,
+    "province": "Montana Province"
+  },
+  {
+    "id": "hristo_smirnenski",
+    "name_bg": "Христо Смирненски",
+    "name_en": "Hristo Smirnenski",
+    "lat": 43.102,
+    "lon": 25.121,
+    "capacity_mm3": 27.7,
+    "province": "Gabrovo Province"
+  },
+  {
+    "id": "yovkovtsi",
+    "name_bg": "Йовковци",
+    "name_en": "Yovkovtsi",
+    "lat": 42.931,
+    "lon": 25.797,
+    "capacity_mm3": 92.179,
+    "province": "Veliko Tarnovo Province"
+  },
+  {
+    "id": "ticha",
+    "name_bg": "Тича",
+    "name_en": "Ticha",
+    "lat": 43.044,
+    "lon": 26.751,
+    "capacity_mm3": 311.8,
+    "province": "Shumen Province"
+  },
+  {
+    "id": "kamchia",
+    "name_bg": "Камчия",
+    "name_en": "Kamchia",
+    "lat": 42.87,
+    "lon": 26.87,
+    "capacity_mm3": 233.55,
+    "province": "Burgas Province"
+  },
+  {
+    "id": "yasna_polyana",
+    "name_bg": "Ясна поляна",
+    "name_en": "Yasna Polyana",
+    "lat": 42.246,
+    "lon": 27.576,
+    "capacity_mm3": 32.32,
+    "province": "Burgas Province"
+  },
+  {
+    "id": "asenovets",
+    "name_bg": "Асеновец",
+    "name_en": "Asenovets",
+    "lat": 42.727,
+    "lon": 26.246,
+    "capacity_mm3": 28.2,
+    "province": "Sliven Province"
+  },
+  {
+    "id": "borovitsa",
+    "name_bg": "Боровица",
+    "name_en": "Borovitsa",
+    "lat": 41.766,
+    "lon": 25.129,
+    "capacity_mm3": 27.3,
+    "province": "Kardzhali Province"
+  },
+  {
+    "id": "studena",
+    "name_bg": "Студена",
+    "name_en": "Studena",
+    "lat": 42.533,
+    "lon": 23.15,
+    "capacity_mm3": 25.2,
+    "province": "Pernik Province"
+  },
+  {
+    "id": "dyakovo",
+    "name_bg": "Дяково",
+    "name_en": "Dyakovo",
+    "lat": 42.351,
+    "lon": 23.087,
+    "capacity_mm3": 35.4,
+    "province": "Sofia Province"
+  },
+  {
+    "id": "kalin",
+    "name_bg": "Калин",
+    "name_en": "Kalin",
+    "lat": 42.174,
+    "lon": 23.249,
+    "capacity_mm3": 1.024,
+    "province": "Sofia Province"
+  },
+  {
+    "id": "karagyol",
+    "name_bg": "Карагьол",
+    "name_en": "Karagyol",
+    "lat": 42.185,
+    "lon": 23.255,
+    "capacity_mm3": 2.252,
+    "province": "Sofia Province"
+  },
+  {
+    "id": "ognyanova",
+    "name_bg": "Огняново",
+    "name_en": "Ognyanovo",
+    "lat": 42.612,
+    "lon": 23.75,
+    "capacity_mm3": 31.6,
+    "province": "Sofia Province"
+  },
+  {
+    "id": "poroy",
+    "name_bg": "Порой",
+    "name_en": "Poroy",
+    "lat": 42.718,
+    "lon": 27.624,
+    "capacity_mm3": 44.24,
+    "province": "Burgas Province"
+  },
+  {
+    "id": "akheloy",
+    "name_bg": "Ахелой",
+    "name_en": "Akheloy",
+    "lat": 42.708,
+    "lon": 27.519,
+    "capacity_mm3": 11.513,
+    "province": "Burgas Province"
+  },
+  {
+    "id": "pancharevo",
+    "name_bg": "Панчарево",
+    "name_en": "Pancharevo",
+    "lat": 42.593,
+    "lon": 23.42,
+    "capacity_mm3": 6.465,
+    "province": "Sofia City"
+  },
+  {
+    "id": "yastrebino",
+    "name_bg": "Ястребино",
+    "name_en": "Yastrebino",
+    "lat": 43.141,
+    "lon": 26.283,
+    "capacity_mm3": 62.3,
+    "province": "Targovishte Province"
+  },
+  {
+    "id": "kula",
+    "name_bg": "Кула",
+    "name_en": "Kula",
+    "lat": 43.908,
+    "lon": 22.515,
+    "capacity_mm3": 20.25,
+    "province": "Vidin Province"
+  },
+  {
+    "id": "rabisha",
+    "name_bg": "Рабиша",
+    "name_en": "Rabisha",
+    "lat": 43.738,
+    "lon": 22.586,
+    "capacity_mm3": 43.2,
+    "province": "Vidin Province"
+  },
+  {
+    "id": "ogosta",
+    "name_bg": "Огоста",
+    "name_en": "Ogosta",
+    "lat": 43.375,
+    "lon": 23.182,
+    "capacity_mm3": 506.0,
+    "province": "Montana Province"
+  },
+  {
+    "id": "sopot",
+    "name_bg": "Сопот",
+    "name_en": "Sopot",
+    "lat": 43.0,
+    "lon": 24.433,
+    "capacity_mm3": 60.908,
+    "province": "Lovech Province"
+  },
+  {
+    "id": "gorni_dabnik",
+    "name_bg": "Горни Дъбник",
+    "name_en": "Gorni Dabnik",
+    "lat": 43.383,
+    "lon": 24.333,
+    "capacity_mm3": 130.0,
+    "province": "Pleven Province"
+  },
+  {
+    "id": "beli_lom",
+    "name_bg": "Бели Лом",
+    "name_en": "Beli Lom",
+    "lat": 43.398,
+    "lon": 26.661,
+    "capacity_mm3": 25.5,
+    "province": "Razgrad Province"
+  },
+  {
+    "id": "saedenie",
+    "name_bg": "Съединение",
+    "name_en": "Saedenie",
+    "lat": 43.333,
+    "lon": 26.583,
+    "capacity_mm3": 12.81,
+    "province": "Targovishte Province"
+  },
+  {
+    "id": "georgi_traikov",
+    "name_bg": "Георги Трайков",
+    "name_en": "Georgi Traikov (Tsonevo)",
+    "lat": 42.997,
+    "lon": 27.405,
+    "capacity_mm3": 330.0,
+    "province": "Varna Province"
+  },
+  {
+    "id": "zhrebchevo",
+    "name_bg": "Жребчево",
+    "name_en": "Zhrebchevo",
+    "lat": 42.596,
+    "lon": 25.928,
+    "capacity_mm3": 400.0,
+    "province": "Sliven Province"
+  },
+  {
+    "id": "malko_sharkovo",
+    "name_bg": "Малко Шарково",
+    "name_en": "Malko Sharkovo",
+    "lat": 42.1,
+    "lon": 26.867,
+    "capacity_mm3": 45.0,
+    "province": "Yambol Province"
+  },
+  {
+    "id": "domlyan",
+    "name_bg": "Домлян",
+    "name_en": "Domlyan",
+    "lat": 42.546,
+    "lon": 24.921,
+    "capacity_mm3": 26.074,
+    "province": "Plovdiv Province"
+  },
+  {
+    "id": "pyasachnik",
+    "name_bg": "Пясъчник",
+    "name_en": "Pyasachnik",
+    "lat": 42.4,
+    "lon": 24.567,
+    "capacity_mm3": 206.53,
+    "province": "Plovdiv Province"
+  },
+  {
+    "id": "topolnitsa",
+    "name_bg": "Тополница",
+    "name_en": "Topolnitsa",
+    "lat": 42.431,
+    "lon": 24.005,
+    "capacity_mm3": 137.108,
+    "province": "Plovdiv Province"
+  },
+  {
+    "id": "trakiets",
+    "name_bg": "Тракиец",
+    "name_en": "Trakiets",
+    "lat": 41.853,
+    "lon": 25.406,
+    "capacity_mm3": 114.0,
+    "province": "Haskovo Province"
+  },
+  {
+    "id": "pchelina",
+    "name_bg": "Пчелина",
+    "name_en": "Pchelina",
+    "lat": 42.519,
+    "lon": 22.847,
+    "capacity_mm3": 54.2,
+    "province": "Pernik Province"
+  },
+  {
+    "id": "aleksandar_stamboliyski",
+    "name_bg": "Александър Стамболийски",
+    "name_en": "Aleksandar Stamboliyski",
+    "lat": 43.108,
+    "lon": 25.13,
+    "capacity_mm3": 205.569,
+    "province": "Lovech Province"
+  },
+  {
+    "id": "kokalyane",
+    "name_bg": "Кокаляне",
+    "name_en": "Kokalyane",
+    "lat": 42.556,
+    "lon": 23.501,
+    "capacity_mm3": 0.46,
+    "province": "Sofia City"
+  },
+  {
+    "id": "koprinka",
+    "name_bg": "Копринка",
+    "name_en": "Koprinka",
+    "lat": 42.617,
+    "lon": 25.3,
+    "capacity_mm3": 142.214,
+    "province": "Stara Zagora Province"
+  },
+  {
+    "id": "belmeken",
+    "name_bg": "Белмекен",
+    "name_en": "Belmeken",
+    "lat": 42.161,
+    "lon": 23.797,
+    "capacity_mm3": 144.036,
+    "province": "Pazardzhik Province"
+  },
+  {
+    "id": "chaira",
+    "name_bg": "Чаира",
+    "name_en": "Chaira",
+    "lat": 42.157,
+    "lon": 23.87,
+    "capacity_mm3": 5.5,
+    "province": "Pazardzhik Province"
+  },
+  {
+    "id": "golyam_beglik",
+    "name_bg": "Голям Беглик",
+    "name_en": "Golyam Beglik",
+    "lat": 41.808,
+    "lon": 24.119,
+    "capacity_mm3": 62.111,
+    "province": "Pazardzhik Province"
+  },
+  {
+    "id": "shiroka_polyana",
+    "name_bg": "Широка поляна",
+    "name_en": "Shiroka Polyana",
+    "lat": 41.767,
+    "lon": 24.167,
+    "capacity_mm3": 23.98,
+    "province": "Pazardzhik Province"
+  },
+  {
+    "id": "beglika",
+    "name_bg": "Беглика",
+    "name_en": "Beglika",
+    "lat": 41.824,
+    "lon": 24.129,
+    "capacity_mm3": 1.554,
+    "province": "Pazardzhik Province"
+  },
+  {
+    "id": "toshkov_chark",
+    "name_bg": "Тошков Чарк",
+    "name_en": "Toshkov Chark",
+    "lat": 41.81,
+    "lon": 24.165,
+    "capacity_mm3": 1.782,
+    "province": "Pazardzhik Province"
+  },
+  {
+    "id": "batak",
+    "name_bg": "Батак",
+    "name_en": "Batak",
+    "lat": 41.971,
+    "lon": 24.191,
+    "capacity_mm3": 310.298,
+    "province": "Pazardzhik Province"
+  },
+  {
+    "id": "dospat",
+    "name_bg": "Доспат",
+    "name_en": "Dospat",
+    "lat": 41.698,
+    "lon": 24.086,
+    "capacity_mm3": 449.249,
+    "province": "Smolyan Province"
+  },
+  {
+    "id": "tsankov_kamak",
+    "name_bg": "Цанков камък",
+    "name_en": "Tsankov Kamak",
+    "lat": 41.782,
+    "lon": 24.437,
+    "capacity_mm3": 110.708,
+    "province": "Smolyan Province"
+  },
+  {
+    "id": "vacha",
+    "name_bg": "Въча",
+    "name_en": "Vacha",
+    "lat": 41.932,
+    "lon": 24.438,
+    "capacity_mm3": 226.12,
+    "province": "Smolyan Province"
+  },
+  {
+    "id": "krichim",
+    "name_bg": "Кричим",
+    "name_en": "Krichim",
+    "lat": 41.982,
+    "lon": 24.455,
+    "capacity_mm3": 20.256,
+    "province": "Plovdiv Province"
+  },
+  {
+    "id": "kardzhali",
+    "name_bg": "Кърджали",
+    "name_en": "Kardzhali",
+    "lat": 41.656,
+    "lon": 25.29,
+    "capacity_mm3": 497.236,
+    "province": "Kardzhali Province"
+  },
+  {
+    "id": "studen_kladenets",
+    "name_bg": "Студен кладенец",
+    "name_en": "Studen Kladenets",
+    "lat": 41.624,
+    "lon": 25.622,
+    "capacity_mm3": 387.772,
+    "province": "Kardzhali Province"
+  },
+  {
+    "id": "ivaylovgrad",
+    "name_bg": "Ивайловград",
+    "name_en": "Ivaylovgrad",
+    "lat": 41.63,
+    "lon": 25.973,
+    "capacity_mm3": 156.702,
+    "province": "Haskovo Province"
+  },
+  {
+    "id": "rozov_kladenets",
+    "name_bg": "Розов кладенец",
+    "name_en": "Rozov Kladenets",
+    "lat": 42.143,
+    "lon": 25.902,
+    "capacity_mm3": 20.4,
+    "province": "Stara Zagora Province"
+  }
+]

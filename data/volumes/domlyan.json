@@ -1,0 +1,20 @@
+{
+  "reservoir": "domlyan",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.422462+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.08,
+      "outflow_m3s": 2.233,
+      "volume_mm3": 24.007,
+      "total_capacity_mm3": 26.074,
+      "pct_total": 92.07,
+      "dead_volume_mm3": 0.7,
+      "useful_volume_mm3": 23.307,
+      "pct_useful": 91.85,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.422443+00:00"
+    }
+  ]
+}

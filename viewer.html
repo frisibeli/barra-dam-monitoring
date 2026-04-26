@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dam Water Monitor — Viewer</title>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  :root {
+    --bg:      #1a1a2e;
+    --surface: #16213e;
+    --accent:  #1e64dc;
+    --text:    #e0e0e0;
+    --muted:   #8888aa;
+    --border:  #2a2a4a;
+    --water:   #1e64dc;
+    --lost:    #dc3c3c;
+    --gained:  #3cc850;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+  header h1 { font-size: 16px; font-weight: 600; white-space: nowrap; }
+  .stats {
+    display: flex;
+    gap: 24px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .stats span { white-space: nowrap; }
+  .stats strong { color: var(--text); }
+
+  /* ── Main layout ── */
+  .main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ── Map ── */
+  #map {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 380px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .sidebar section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar section:last-child { border-bottom: none; }
+  .sidebar h2 { font-size: 13px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+
+  /* ── Controls ── */
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .control-row label { font-size: 12px; color: var(--muted); min-width: 50px; }
+  input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent);
+  }
+  .date-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+    padding: 4px 0;
+  }
+  .btn-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 6px;
+  }
+  .btn {
+    background: var(--border);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: var(--accent); }
+  .btn.active { background: var(--accent); border-color: var(--accent); }
+
+  /* ── Layer toggles ── */
+  .layer-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .layer-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .layer-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ── Chart ── */
+  .chart-wrap {
+    padding: 8px;
+    height: 220px;
+  }
+  .chart-wrap canvas { width: 100% !important; height: 100% !important; }
+
+  /* ── Info ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .info-card {
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+  }
+  .info-card .value { font-size: 20px; font-weight: 700; color: var(--accent); }
+  .info-card .label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Cloud filter ── */
+  .cloud-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .cloud-filter-row label { font-size: 12px; color: var(--muted); }
+  .cloud-filter-row input[type="number"] {
+    width: 58px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 12px;
+  }
+  .cloud-filter-row input[type="number"]:focus { outline: none; border-color: var(--accent); }
+  .toggle-switch {
+    position: relative;
+    width: 34px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-switch .slider-track {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle-switch .slider-track::before {
+    content: '';
+    position: absolute;
+    width: 12px; height: 12px;
+    left: 3px; top: 3px;
+    background: var(--muted);
+    border-radius: 50%;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .toggle-switch input:checked + .slider-track { background: var(--accent); }
+  .toggle-switch input:checked + .slider-track::before {
+    transform: translateX(16px);
+    background: #fff;
+  }
+  .filter-count { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Loading overlay ── */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 46, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.3s;
+  }
+  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+  .loading-overlay .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  .loading-overlay p { color: var(--muted); font-size: 13px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Leaflet overrides ── */
+  .leaflet-control-zoom a {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌊 Dam Water Monitor</h1>
+  <div class="stats" id="headerStats"></div>
+</header>
+
+<div class="main">
+  <div id="map"></div>
+  <div class="sidebar">
+
+    <!-- Date navigation -->
+    <section>
+      <h2>Date</h2>
+      <div class="date-label" id="dateLabel">—</div>
+      <div class="control-row">
+        <input type="range" id="dateSlider" min="0" max="0" value="0" />
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="btnPrev" title="Previous">◀</button>
+        <button class="btn" id="btnPlay" title="Play / Pause">▶ Play</button>
+        <button class="btn" id="btnNext" title="Next">▶</button>
+      </div>
+    </section>
+
+    <!-- Cloud filter -->
+    <section>
+      <h2>Cloud Filter</h2>
+      <div class="cloud-filter-row">
+        <label class="toggle-switch">
+          <input type="checkbox" id="cloudFilterEnabled" />
+          <span class="slider-track"></span>
+        </label>
+        <label for="cloudThreshold">Max cloud cover</label>
+        <input type="number" id="cloudThreshold" min="0" max="100" value="40" step="1" />
+        <label>%</label>
+      </div>
+      <div class="filter-count" id="filterCount"></div>
+    </section>
+
+    <!-- Layer control -->
+    <section>
+      <h2>Layers</h2>
+      <div class="layer-toggles" id="layerToggles">
+        <button class="layer-btn active" data-layer="true_color">True Color</button>
+        <button class="layer-btn" data-layer="water_index">Water Index</button>
+        <button class="layer-btn" data-layer="water_mask">Water Mask</button>
+        <button class="layer-btn" data-layer="overlay">Overlay</button>
+      </div>
+    </section>
+
+    <!-- Current epoch stats -->
+    <section>
+      <h2>Current Reading</h2>
+      <div class="info-grid" id="infoGrid">
+        <div class="info-card"><div class="value" id="valArea">—</div><div class="label">Water Area (km²)</div></div>
+        <div class="info-card"><div class="value" id="valCloud">—</div><div class="label">Cloud Cover (%)</div></div>
+        <div class="info-card"><div class="value" id="valPixels">—</div><div class="label">Water Pixels</div></div>
+        <div class="info-card"><div class="value" id="valValid">—</div><div class="label">Valid Pixels</div></div>
+      </div>
+    </section>
+
+    <!-- Time series chart -->
+    <section>
+      <h2>Water Area Time Series</h2>
+      <div class="chart-wrap">
+        <canvas id="tsChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 7-day inflow forecast -->
+    <section id="forecastSection">
+      <h2>7-Day Inflow Forecast</h2>
+      <div id="forecastStatus" style="font-size:11px;color:var(--muted);margin-bottom:8px">Loading forecast…</div>
+      <div class="chart-wrap" id="forecastChartWrap" style="display:none">
+        <canvas id="forecastChart"></canvas>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="loading-overlay" id="loader">
+  <div class="spinner"></div>
+  <p id="loaderText">Loading data…</p>
+</div>
+
+<script>
+(async function boot() {
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => [...document.querySelectorAll(sel)];
+
+  // ── State ──
+  let manifest = null;
+  let results = null;
+  let filteredDates = [];   // subset of manifest.dates after cloud filter
+  let currentIdx = 0;
+  let activeLayer = "true_color";
+  let playing = false;
+  let playTimer = null;
+  let imageOverlay = null;
+  let bboxRect = null;
+  let tsChart = null;
+
+  const map = L.map("map", { preferCanvas: true, zoomControl: true });
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    attribution: '© <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 19,
+  }).addTo(map);
+
+  // ── Load data ──
+  try {
+    $("#loaderText").textContent = "Loading manifest…";
+    const mRes = await fetch("data/viewer_manifest.json"+'?'+Date.now()); // cache buster
+    manifest = await mRes.json();
+
+    $("#loaderText").textContent = "Loading results…";
+    const rRes = await fetch("data/results.json");
+    results = await rRes.json();
+  } catch (e) {
+    $("#loaderText").textContent = "Failed to load data. Run pipeline.py first.";
+    console.error(e);
+    return;
+  }
+
+  if (!manifest.dates || manifest.dates.length === 0) {
+    $("#loaderText").textContent = "No dates found. Run pipeline.py with visualizations enabled.";
+    return;
+  }
+
+  // ── Map setup ──
+  const bbox = manifest.bbox;
+  const bounds = L.latLngBounds(
+    [bbox.south, bbox.west],
+    [bbox.north, bbox.east]
+  );
+  map.fitBounds(bounds, { padding: [30, 30] });
+
+  // AOI rectangle
+  bboxRect = L.rectangle(bounds, {
+    color: "#fff",
+    weight: 1.5,
+    dashArray: "6 4",
+    fillOpacity: 0,
+  }).addTo(map);
+
+  // ── Header stats ──
+  const readings = results.readings || [];
+  const areas = readings.map((r) => r.water_area_km2);
+  $("#headerStats").innerHTML = `
+    <span>Reservoir: <strong>${(manifest.reservoir || "unknown").toUpperCase()}</strong></span>
+    <span>Epochs: <strong>${manifest.dates.length}</strong></span>
+    <span>Min: <strong>${areas.length ? Math.min(...areas).toFixed(2) : "—"} km²</strong></span>
+    <span>Max: <strong>${areas.length ? Math.max(...areas).toFixed(2) : "—"} km²</strong></span>
+  `;
+
+  // ── Cloud filter ──
+  function applyCloudFilter() {
+    const enabled = $("#cloudFilterEnabled").checked;
+    const threshold = parseFloat($("#cloudThreshold").value);
+    if (enabled && !isNaN(threshold)) {
+      filteredDates = manifest.dates.filter((entry) => {
+        const r = readings.find((rd) => rd.date === entry.date);
+        return !r || r.cloud_pct <= threshold;
+      });
+    } else {
+      filteredDates = manifest.dates.slice();
+    }
+    const hidden = manifest.dates.length - filteredDates.length;
+    $("#filterCount").textContent = enabled
+      ? `${filteredDates.length} of ${manifest.dates.length} dates shown (${hidden} hidden)`
+      : "";
+    currentIdx = 0;
+    const slider = $("#dateSlider");
+    slider.max = Math.max(0, filteredDates.length - 1);
+    slider.value = 0;
+    rebuildChart();
+    render();
+  }
+
+  $("#cloudFilterEnabled").addEventListener("change", applyCloudFilter);
+  $("#cloudThreshold").addEventListener("change", applyCloudFilter);
+  $("#cloudThreshold").addEventListener("input", applyCloudFilter);
+
+  // ── Slider setup ──
+  const slider = $("#dateSlider");
+  slider.addEventListener("input", () => {
+    currentIdx = parseInt(slider.value);
+    render();
+  });
+
+  // ── Navigation buttons ──
+  function goPrev() {
+    if (currentIdx > 0) { currentIdx--; slider.value = currentIdx; render(); }
+  }
+  function goNext() {
+    if (currentIdx < filteredDates.length - 1) { currentIdx++; slider.value = currentIdx; render(); }
+  }
+  function togglePlay() {
+    playing = !playing;
+    $("#btnPlay").textContent = playing ? "⏸ Pause" : "▶ Play";
+    $("#btnPlay").classList.toggle("active", playing);
+    if (playing) {
+      playTimer = setInterval(() => {
+        if (currentIdx >= filteredDates.length - 1) {
+          currentIdx = 0;
+        } else {
+          currentIdx++;
+        }
+        slider.value = currentIdx;
+        render();
+      }, 1200);
+    } else {
+      clearInterval(playTimer);
+    }
+  }
+
+  $("#btnPrev").addEventListener("click", goPrev);
+  $("#btnNext").addEventListener("click", goNext);
+  $("#btnPlay").addEventListener("click", togglePlay);
+
+  // Keyboard shortcuts
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") goPrev();
+    else if (e.key === "ArrowRight") goNext();
+    else if (e.key === " ") { e.preventDefault(); togglePlay(); }
+  });
+
+  // ── Layer toggles ──
+  $$(".layer-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      $$(".layer-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeLayer = btn.dataset.layer;
+      render();
+    });
+  });
+
+  // ── Chart setup ──
+  function buildChart() {
+    const ctx = $("#tsChart").getContext("2d");
+    const activeDates = new Set(filteredDates.map((e) => e.date));
+    const filteredReadings = readings.filter((r) => activeDates.has(r.date));
+    const labels = filteredReadings.map((r) => r.date);
+    const data = filteredReadings.map((r) => r.water_area_km2);
+
+    tsChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [{
+          label: "Water Area (km²)",
+          data,
+          borderColor: "#1e64dc",
+          backgroundColor: "rgba(30, 100, 220, 0.15)",
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: labels.map((_, i) =>
+            filteredReadings[i]?.date === (filteredDates[currentIdx]?.date) ? "#fff" : "#1e64dc"
+          ),
+          pointBorderColor: labels.map((_, i) =>
+            filteredReadings[i]?.date === (filteredDates[currentIdx]?.date) ? "#1e64dc" : "transparent"
+          ),
+          pointBorderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "#16213e",
+            titleColor: "#e0e0e0",
+            bodyColor: "#e0e0e0",
+            borderColor: "#2a2a4a",
+            borderWidth: 1,
+          },
+        },
+        scales: {
+          x: {
+            ticks: { color: "#8888aa", maxRotation: 45, font: { size: 9 } },
+            grid: { color: "rgba(255,255,255,0.05)" },
+          },
+          y: {
+            ticks: { color: "#8888aa" },
+            grid: { color: "rgba(255,255,255,0.08)" },
+            title: { display: true, text: "km²", color: "#8888aa" },
+          },
+        },
+        onClick: (evt) => {
+          const points = tsChart.getElementsAtEventForMode(evt, "nearest", { intersect: true }, true);
+          if (points.length) {
+            const clickedDate = tsChart.data.labels[points[0].index];
+            const fi = filteredDates.findIndex((e) => e.date === clickedDate);
+            if (fi !== -1) { currentIdx = fi; slider.value = fi; render(); }
+          }
+        },
+      },
+    });
+  }
+
+  function updateChartHighlight() {
+    if (!tsChart) return;
+    const currentDate = filteredDates[currentIdx]?.date;
+    const labels = tsChart.data.labels;
+    const ds = tsChart.data.datasets[0];
+    ds.pointBackgroundColor = labels.map((d) => d === currentDate ? "#fff" : "#1e64dc");
+    ds.pointBorderColor    = labels.map((d) => d === currentDate ? "#1e64dc" : "transparent");
+    ds.pointRadius         = labels.map((d) => d === currentDate ? 7 : 4);
+    tsChart.update("none");
+  }
+
+  function rebuildChart() {
+    if (tsChart) { tsChart.destroy(); tsChart = null; }
+    buildChart();
+  }
+
+  // ── Render current state ──
+  function render() {
+    const entry = filteredDates[currentIdx];
+    if (!entry) return;
+
+    // Date label
+    $("#dateLabel").textContent = entry.date;
+
+    // Image overlay
+    const imgPath = entry.images[activeLayer]+'?'+Date.now(); // cache buster
+    if (imageOverlay) {
+      map.removeLayer(imageOverlay);
+      imageOverlay = null;
+    }
+    if (imgPath) {
+      imageOverlay = L.imageOverlay(imgPath, bounds, {
+        opacity: 1.0,
+        interactive: false,
+      }).addTo(map);
+    }
+
+    // Info cards — find matching reading
+    const reading = readings.find((r) => r.date === entry.date);
+    if (reading) {
+      $("#valArea").textContent = reading.water_area_km2.toFixed(2);
+      $("#valCloud").textContent = reading.cloud_pct.toFixed(1);
+      $("#valPixels").textContent = reading.water_pixels.toLocaleString();
+      $("#valValid").textContent = reading.valid_pixels.toLocaleString();
+    } else {
+      $("#valArea").textContent = "—";
+      $("#valCloud").textContent = "—";
+      $("#valPixels").textContent = "—";
+      $("#valValid").textContent = "—";
+    }
+
+    updateChartHighlight();
+  }
+
+  // ── Boot sequence ──
+  filteredDates = manifest.dates.slice();
+  slider.max = Math.max(0, filteredDates.length - 1);
+  buildChart();
+  render();
+  $("#loader").classList.add("hidden");
+
+  // ── 7-day inflow forecast ──
+  (async function loadForecast() {
+    const statusEl = $("#forecastStatus");
+    try {
+      const res = await fetch("/api/forecast");
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      statusEl.textContent = `Avg inflow: ${(data.reduce((s, r) => s + r.predicted_inflow_m3s, 0) / data.length).toFixed(1)} m³/s (next 7 days)`;
+      $("#forecastChartWrap").style.display = "block";
+
+      const ctx = $("#forecastChart").getContext("2d");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: data.map(r => r.date.slice(5)),
+          datasets: [{
+            label: "Predicted Inflow (m³/s)",
+            data: data.map(r => r.predicted_inflow_m3s),
+            borderColor: "#1e64dc",
+            backgroundColor: "rgba(30, 100, 220, 0.15)",
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4,
+            pointBackgroundColor: "#1e64dc",
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: "#16213e",
+              titleColor: "#e0e0e0",
+              bodyColor: "#e0e0e0",
+              borderColor: "#2a2a4a",
+              borderWidth: 1,
+            },
+          },
+          scales: {
+            x: {
+              ticks: { color: "#8888aa", font: { size: 9 } },
+              grid: { color: "rgba(255,255,255,0.05)" },
+            },
+            y: {
+              ticks: { color: "#8888aa" },
+              grid: { color: "rgba(255,255,255,0.08)" },
+              title: { display: true, text: "m³/s", color: "#8888aa" },
+            },
+          },
+        },
+      });
+    } catch (e) {
+      statusEl.textContent = "Forecast unavailable — start serve.py to enable.";
+      console.warn("Forecast fetch failed:", e);
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>

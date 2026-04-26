@@ -1,0 +1,20 @@
+{
+  "reservoir": "yovkovtsi",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.410395+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 1.298,
+      "outflow_m3s": 0.664,
+      "volume_mm3": 86.285,
+      "total_capacity_mm3": 92.179,
+      "pct_total": 93.61,
+      "dead_volume_mm3": 9.0,
+      "useful_volume_mm3": 77.285,
+      "pct_useful": 92.91,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.410377+00:00"
+    }
+  ]
+}

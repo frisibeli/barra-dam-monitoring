@@ -1,0 +1,20 @@
+{
+  "reservoir": "golyam_beglik",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.423417+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.0,
+      "outflow_m3s": 0.0,
+      "volume_mm3": 53.647,
+      "total_capacity_mm3": 62.111,
+      "pct_total": 86.37,
+      "dead_volume_mm3": 3.942,
+      "useful_volume_mm3": 49.705,
+      "pct_useful": 85.45,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.423395+00:00"
+    }
+  ]
+}

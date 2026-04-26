@@ -1,0 +1,20 @@
+{
+  "reservoir": "akheloy",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.411685+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.197,
+      "outflow_m3s": 0.278,
+      "volume_mm3": 9.704,
+      "total_capacity_mm3": 11.513,
+      "pct_total": 84.29,
+      "dead_volume_mm3": 0.8,
+      "useful_volume_mm3": 8.904,
+      "pct_useful": 83.11,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.411670+00:00"
+    }
+  ]
+}

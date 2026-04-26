@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InSAR Deformation Viewer</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f1117; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── Header ── */
+  #header { background: #1a1d2e; border-bottom: 1px solid #2a2d3e; padding: 10px 20px; display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+  #header h1 { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: 0.3px; }
+  #header .subtitle { font-size: 12px; color: #6b7280; }
+  #stats-bar { margin-left: auto; display: flex; gap: 24px; }
+  .stat { text-align: right; }
+  .stat-val { font-size: 14px; font-weight: 600; color: #60a5fa; }
+  .stat-lbl { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ── Layout ── */
+  #main { display: flex; flex: 1; overflow: hidden; }
+  #map { flex: 1; }
+  #sidebar { width: 340px; background: #1a1d2e; border-left: 1px solid #2a2d3e; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
+
+  /* ── Timeline panel ── */
+  #timeline-panel { padding: 14px 16px; border-bottom: 1px solid #2a2d3e; flex-shrink: 0; }
+  #timeline-panel h2 { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+  #date-display { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  #epoch-info { font-size: 11px; color: #6b7280; margin-bottom: 12px; }
+  #date-slider { width: 100%; accent-color: #3b82f6; cursor: pointer; }
+  #nav-btns { display: flex; gap: 6px; margin-top: 10px; }
+  .nav-btn { flex: 1; padding: 5px; background: #252836; border: 1px solid #2a2d3e; border-radius: 5px; color: #9ca3af; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+  .nav-btn:hover { background: #2d3148; color: #fff; border-color: #3b82f6; }
+
+  /* ── Legend ── */
+  #legend-panel { padding: 14px 16px; border-bottom: 1px solid #2a2d3e; flex-shrink: 0; }
+  #legend-panel h2 { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+  #legend-bar { height: 10px; border-radius: 5px; background: linear-gradient(to right, #d73027, #f46d43, #fdae61, #fee090, #ffffbf, #e0f3f8, #abd9e9, #74add1, #4575b4); margin-bottom: 6px; }
+  .legend-labels { display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; }
+  #filter-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 11px; color: #9ca3af; }
+  #threshold-slider { flex: 1; accent-color: #3b82f6; }
+  #threshold-val { min-width: 38px; color: #60a5fa; font-weight: 600; }
+
+  /* ── Epoch strip ── */
+  #epoch-strip { padding: 10px 16px; border-bottom: 1px solid #2a2d3e; flex-shrink: 0; }
+  #epoch-strip h2 { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  #strip-container { display: flex; gap: 3px; align-items: flex-end; height: 48px; }
+  .strip-bar { flex: 1; border-radius: 2px 2px 0 0; cursor: pointer; transition: opacity 0.15s; min-width: 6px; }
+  .strip-bar:hover { opacity: 0.7; }
+  .strip-bar.active { outline: 2px solid #fff; outline-offset: 1px; }
+
+  /* ── Time series chart ── */
+  #chart-panel { flex: 1; padding: 14px 16px; display: flex; flex-direction: column; overflow: hidden; }
+  #chart-panel h2 { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; flex-shrink: 0; }
+  #chart-hint { font-size: 11px; color: #4b5563; margin-bottom: 8px; flex-shrink: 0; }
+  #chart-location { font-size: 11px; color: #60a5fa; margin-bottom: 8px; flex-shrink: 0; min-height: 14px; }
+  #chart-wrap { flex: 1; position: relative; min-height: 0; }
+  #ts-chart { width: 100% !important; height: 100% !important; }
+
+  /* ── File guide ── */
+  #file-guide { padding: 14px 16px; border-top: 1px solid #2a2d3e; flex-shrink: 0; }
+  #file-guide h2 { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .file-row { display: flex; gap: 8px; margin-bottom: 5px; align-items: flex-start; }
+  .file-tag { font-size: 10px; font-family: monospace; background: #252836; border: 1px solid #2a2d3e; border-radius: 3px; padding: 1px 5px; color: #93c5fd; white-space: nowrap; flex-shrink: 0; }
+  .file-desc { font-size: 10px; color: #6b7280; line-height: 1.4; }
+
+  /* ── Loading overlay ── */
+  #loading { position: fixed; inset: 0; background: #0f1117; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; gap: 12px; }
+  #loading-text { font-size: 13px; color: #6b7280; }
+  #loading-bar-wrap { width: 200px; height: 3px; background: #252836; border-radius: 2px; }
+  #loading-bar { height: 100%; background: #3b82f6; border-radius: 2px; width: 0%; transition: width 0.3s; }
+
+  /* ── Popup ── */
+  .leaflet-popup-content-wrapper { background: #1a1d2e; border: 1px solid #2a2d3e; border-radius: 8px; color: #e0e0e0; box-shadow: 0 4px 24px rgba(0,0,0,0.5); }
+  .leaflet-popup-tip { background: #1a1d2e; }
+  .popup-val { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+  .popup-lbl { font-size: 11px; color: #6b7280; }
+  .popup-coords { font-size: 10px; color: #4b5563; margin-top: 4px; font-family: monospace; }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div style="font-size:15px;color:#fff;font-weight:600;">Loading InSAR outputs…</div>
+  <div id="loading-bar-wrap"><div id="loading-bar"></div></div>
+  <div id="loading-text">Reading index.json</div>
+</div>
+
+<div id="header">
+  <div>
+    <div id="header-h1" style="font-size:15px;font-weight:600;color:#fff;">InSAR Deformation Monitor</div>
+    <div class="subtitle">Sentinel-1 · Vertical displacement · Sequential stack</div>
+  </div>
+  <div id="stats-bar">
+    <div class="stat"><div class="stat-val" id="stat-epochs">—</div><div class="stat-lbl">Epochs</div></div>
+    <div class="stat"><div class="stat-val" id="stat-span">—</div><div class="stat-lbl">Date span</div></div>
+    <div class="stat"><div class="stat-val" id="stat-points">—</div><div class="stat-lbl">Points loaded</div></div>
+    <div class="stat"><div class="stat-val" id="stat-maxdisp" style="color:#f87171;">—</div><div class="stat-lbl">Max |disp|</div></div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="map"></div>
+  <div id="sidebar">
+
+    <div id="timeline-panel">
+      <h2>Epoch</h2>
+      <div id="date-display">—</div>
+      <div id="epoch-info">Loading…</div>
+      <input type="range" id="date-slider" min="0" value="0">
+      <div id="nav-btns">
+        <button class="nav-btn" onclick="stepEpoch(-1)">◀ Prev</button>
+        <button class="nav-btn" id="play-btn" onclick="togglePlay()">▶ Play</button>
+        <button class="nav-btn" onclick="stepEpoch(1)">Next ▶</button>
+      </div>
+    </div>
+
+    <div id="legend-panel">
+      <h2>Displacement (mm vertical)</h2>
+      <div id="legend-bar"></div>
+      <div class="legend-labels">
+        <span id="leg-min">—</span><span>0</span><span id="leg-max">—</span>
+      </div>
+      <div id="filter-row">
+        <span>Min |disp|</span>
+        <input type="range" id="threshold-slider" min="0" max="30" step="0.5" value="1">
+        <span id="threshold-val">1.0 mm</span>
+      </div>
+    </div>
+
+    <div id="epoch-strip">
+      <h2>All epochs — mean displacement</h2>
+      <div id="strip-container"></div>
+    </div>
+
+    <div id="chart-panel">
+      <h2>Point time series</h2>
+      <div id="chart-hint">Click any point on the map to plot its history</div>
+      <div id="chart-location"></div>
+      <div id="chart-wrap"><canvas id="ts-chart"></canvas></div>
+    </div>
+
+    <div id="file-guide">
+      <h2>What's in your InSAR data/</h2>
+      <div class="file-row"><span class="file-tag">geojson/</span><span class="file-desc">One GeoJSON per epoch — this viewer loads these directly</span></div>
+      <div class="file-row"><span class="file-tag">epoch_*_mm.tif</span><span class="file-desc">Cumulative vertical displacement raster (mm) — use in QGIS</span></div>
+      <div class="file-row"><span class="file-tag">los_displacement.tif</span><span class="file-desc">Raw HyP3 line-of-sight displacement (metres) per pair</span></div>
+      <div class="file-row"><span class="file-tag">coherence.tif</span><span class="file-desc">Phase coherence 0–1; pixels below 0.5 were masked out</span></div>
+      <div class="file-row"><span class="file-tag">point_timeseries.json</span><span class="file-desc">Pre-computed per-pixel time series (used by this chart)</span></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let epochIndex   = [];   // [{date, file, mean_mm}, …] from index.json
+let geojsonCache = {};   // date → FeatureCollection (LRU-ish, just keep all for 18 epochs)
+let currentEpoch = 0;
+let filterThreshold = 1.0;  // mm — hide points below this
+let pointTimeseries = {};   // lat,lon → [{date,displacement_mm}]
+let tsChart = null;
+let playTimer = null;
+let circleLayer = null;
+let aoiLayer    = null;
+let colorScale = { min: -30, max: 30 };  // mm — dynamic after first load
+let map;
+const INSAR_BASE = "data/insar/ogosta_rel80_desc";
+
+// ═══════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════
+async function boot() {
+  setLoading("Initialising map…", 10);
+  initMap();
+
+  setLoading("Loading AOI…", 15);
+  try {
+    const resp = await fetch(`${INSAR_BASE}/geojson/aoi.geojson`);
+    if (resp.ok) {
+      const aoi = await resp.json();
+      aoiLayer = L.geoJSON(aoi, {
+        style: {
+          color: "#f59e0b",
+          weight: 2.5,
+          dashArray: "7 5",
+          fillOpacity: 0.06,
+          fillColor: "#f59e0b",
+        },
+      }).addTo(map);
+      map.fitBounds(aoiLayer.getBounds().pad(1.5));
+    }
+  } catch(e) { /* AOI is optional */ }
+
+  setLoading("Reading InSAR geojson/index.json…", 20);
+  try {
+    const resp = await fetch(`${INSAR_BASE}/geojson/index.json`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    epochIndex = await resp.json();
+  } catch(e) {
+    document.getElementById("loading-text").textContent = 
+      "❌ Cannot read data/insar/ogosta_rel80_desc/geojson/index.json. " + e.message;
+    return;
+  }
+
+  setLoading("Reading point_timeseries.json…", 35);
+  try {
+    const resp = await fetch(`${INSAR_BASE}/processed/point_timeseries.json`);
+    if (resp.ok) pointTimeseries = await resp.json();
+  } catch(e) { /* optional — chart just won't work */ }
+
+  setLoading("Pre-loading GeoJSON epochs…", 50);
+  await preloadEpochs();
+
+  setLoading("Finalising…", 90);
+  buildUI();
+  await renderEpoch(0);
+
+  document.getElementById("loading").style.display = "none";
+}
+
+function setLoading(msg, pct) {
+  document.getElementById("loading-text").textContent = msg;
+  document.getElementById("loading-bar").style.width = pct + "%";
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAP
+// ═══════════════════════════════════════════════════════════
+function initMap() {
+  map = L.map("map", { zoomControl: true, preferCanvas: true });
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    attribution: "© OpenStreetMap © CARTO",
+    maxZoom: 19,
+  }).addTo(map);
+  map.setView([37.5, -122.15], 10);  // default; will fit to data after load
+
+  map.on("click", onMapClick);
+}
+
+// ═══════════════════════════════════════════════════════════
+// GEOJSON LOADING
+// ═══════════════════════════════════════════════════════════
+async function preloadEpochs() {
+  let allMm = [];
+  for (let i = 0; i < epochIndex.length; i++) {
+    const epoch = epochIndex[i];
+    setLoading(`Loading epoch ${i+1}/${epochIndex.length}…`, 50 + (i/epochIndex.length)*35);
+    try {
+      const resp = await fetch(`${INSAR_BASE}/geojson/${epoch.file}`);
+      if (!resp.ok) continue;
+      const gj = await resp.json();
+      geojsonCache[epoch.date] = gj;
+      gj.features.forEach(f => allMm.push(f.properties.displacement_mm));
+    } catch(e) { /* skip missing */ }
+  }
+
+  if (allMm.length > 0) {
+    let absMax = 0;
+    for (let j = 0; j < allMm.length; j++) {
+      const a = Math.abs(allMm[j]);
+      if (a > absMax) absMax = a;
+    }
+    colorScale.min = -Math.ceil(absMax);
+    colorScale.max =  Math.ceil(absMax);
+  }
+
+  // Update stat: total unique points in latest epoch
+  const latestGj = geojsonCache[epochIndex[epochIndex.length-1]?.date];
+  if (latestGj) {
+    document.getElementById("stat-points").textContent = latestGj.features.length.toLocaleString();
+  }
+  document.getElementById("stat-maxdisp").textContent =
+    Math.abs(colorScale.min) + " mm";
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER EPOCH
+// ═══════════════════════════════════════════════════════════
+async function renderEpoch(idx) {
+  currentEpoch = Math.max(0, Math.min(epochIndex.length - 1, idx));
+  const epoch = epochIndex[currentEpoch];
+  const gj    = geojsonCache[epoch.date];
+
+  // Update timeline UI
+  document.getElementById("date-display").textContent = epoch.date;
+  document.getElementById("epoch-info").textContent =
+    `Epoch ${currentEpoch + 1} of ${epochIndex.length}  ·  mean ${epoch.mean_mm != null ? epoch.mean_mm.toFixed(1) + " mm" : "n/a"}`;
+  document.getElementById("date-slider").value = currentEpoch;
+
+  // Highlight active strip bar
+  document.querySelectorAll(".strip-bar").forEach((b, i) => {
+    b.classList.toggle("active", i === currentEpoch);
+  });
+
+  if (!gj) return;
+
+  // Remove old layer
+  if (circleLayer) map.removeLayer(circleLayer);
+
+  // Build circle markers from GeoJSON features
+  const markers = [];
+  for (const f of gj.features) {
+    const mm  = f.properties.displacement_mm;
+    if (Math.abs(mm) < filterThreshold) continue;
+    const ll  = [f.geometry.coordinates[1], f.geometry.coordinates[0]];
+    const col = dispColor(mm);
+    const m   = L.circleMarker(ll, {
+      radius: 4,
+      fillColor: col,
+      fillOpacity: 0.85,
+      color: "transparent",
+      weight: 0,
+    });
+    m.on("click", (e) => {
+      L.DomEvent.stopPropagation(e);
+      showPointPopupAndChart(ll[0], ll[1], mm, epoch.date);
+    });
+    markers.push(m);
+  }
+  circleLayer = L.layerGroup(markers).addTo(map);
+
+  // Fit map to data on first render
+  if (currentEpoch === 0 && gj.features.length > 0) {
+    const coords = gj.features.map(f => [f.geometry.coordinates[1], f.geometry.coordinates[0]]);
+    map.fitBounds(L.latLngBounds(coords).pad(0.1));
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// COLOR SCALE  (red=subsidence, blue=uplift, yellow=stable)
+// ═══════════════════════════════════════════════════════════
+function dispColor(mm) {
+  // Normalise -1..1 over the dynamic range
+  const t = Math.max(-1, Math.min(1, mm / Math.max(Math.abs(colorScale.min), Math.abs(colorScale.max), 1)));
+  // Red (subsidence, negative) → yellow (zero) → blue (uplift, positive)
+  if (t < 0) {
+    // red → yellow: t goes -1..0
+    const u = t + 1;  // 0..1
+    return `rgb(${255}, ${Math.round(u * 255)}, 0)`;
+  } else {
+    // yellow → blue: t goes 0..1
+    const u = 1 - t;  // 1..0
+    return `rgb(${Math.round(u * 255)}, ${Math.round(u * 255)}, ${Math.round(t * 255)})`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CLICK → POPUP + TIME SERIES CHART
+// ═══════════════════════════════════════════════════════════
+function onMapClick(e) {
+  // If user clicks empty area, look up nearest point from point_timeseries
+  const lat = e.latlng.lat;
+  const lon = e.latlng.lng;
+  const key = findNearestKey(lat, lon);
+  if (!key) return;
+  const [klat, klon] = key.split(",").map(Number);
+  const series = pointTimeseries[key];
+  plotTimeSeries(klat, klon, series);
+}
+
+function showPointPopupAndChart(lat, lon, mm, date) {
+  const key = findNearestKey(lat, lon);
+  const series = key ? pointTimeseries[key] : null;
+
+  const color = dispColor(mm);
+  const dir   = mm < 0 ? "subsidence ▼" : "uplift ▲";
+  L.popup({ closeButton: false, maxWidth: 200 })
+    .setLatLng([lat, lon])
+    .setContent(`
+      <div class="popup-val" style="color:${color}">${mm > 0 ? "+" : ""}${mm.toFixed(1)} mm</div>
+      <div class="popup-lbl">cumulative vertical ${dir}</div>
+      <div class="popup-lbl">${date}</div>
+      <div class="popup-coords">${lat.toFixed(5)}, ${lon.toFixed(5)}</div>
+    `)
+    .openOn(map);
+
+  if (series) plotTimeSeries(lat, lon, series);
+}
+
+function findNearestKey(lat, lon) {
+  let bestKey = null, bestDist = Infinity;
+  for (const k of Object.keys(pointTimeseries)) {
+    const [klat, klon] = k.split(",").map(Number);
+    const d = (klat - lat) ** 2 + (klon - lon) ** 2;
+    if (d < bestDist) { bestDist = d; bestKey = k; }
+  }
+  return bestKey;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIME SERIES CHART (Chart.js)
+// ═══════════════════════════════════════════════════════════
+function plotTimeSeries(lat, lon, series) {
+  document.getElementById("chart-hint").style.display = "none";
+  document.getElementById("chart-location").textContent =
+    `${lat.toFixed(4)}°, ${lon.toFixed(4)}°`;
+
+  const labels = series.map(p => p.date.slice(5));  // MM-DD
+  const values = series.map(p => p.displacement_mm);
+
+  const ctx = document.getElementById("ts-chart").getContext("2d");
+  if (tsChart) tsChart.destroy();
+
+  tsChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        label: "Cumulative vertical displacement (mm)",
+        data: values,
+        borderColor: "#3b82f6",
+        backgroundColor: "rgba(59,130,246,0.08)",
+        pointBackgroundColor: values.map(v =>
+          v == null ? "transparent" : dispColor(v)
+        ),
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        borderWidth: 1.5,
+        tension: 0.3,
+        spanGaps: false,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => series[items[0].dataIndex].date,
+            label: (item) => item.raw != null ? `${item.raw > 0 ? "+" : ""}${item.raw.toFixed(2)} mm` : "masked",
+          },
+          backgroundColor: "#1a1d2e",
+          borderColor: "#2a2d3e",
+          borderWidth: 1,
+          titleColor: "#9ca3af",
+          bodyColor: "#fff",
+        },
+      },
+      scales: {
+        x: {
+          ticks: { color: "#6b7280", font: { size: 10 }, maxRotation: 45 },
+          grid: { color: "#1e2130" },
+        },
+        y: {
+          ticks: {
+            color: "#6b7280",
+            font: { size: 10 },
+            callback: v => v != null ? `${v > 0 ? "+" : ""}${v.toFixed(1)}` : "",
+          },
+          grid: { color: "#1e2130" },
+          title: { display: true, text: "mm", color: "#4b5563", font: { size: 10 } },
+        },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// BUILD SIDEBAR UI
+// ═══════════════════════════════════════════════════════════
+function buildUI() {
+  // Header stats
+  document.getElementById("stat-epochs").textContent = epochIndex.length;
+  if (epochIndex.length >= 2) {
+    document.getElementById("stat-span").textContent =
+      epochIndex[0].date.slice(5) + " → " + epochIndex[epochIndex.length-1].date.slice(5);
+  }
+
+  // Slider
+  const slider = document.getElementById("date-slider");
+  slider.max = epochIndex.length - 1;
+  slider.addEventListener("input", () => renderEpoch(parseInt(slider.value)));
+
+  // Legend labels
+  document.getElementById("leg-min").textContent = colorScale.min + " mm";
+  document.getElementById("leg-max").textContent = "+" + colorScale.max + " mm";
+
+  // Threshold slider
+  const tSlider = document.getElementById("threshold-slider");
+  tSlider.max = Math.max(10, Math.abs(colorScale.min));
+  tSlider.addEventListener("input", () => {
+    filterThreshold = parseFloat(tSlider.value);
+    document.getElementById("threshold-val").textContent = filterThreshold.toFixed(1) + " mm";
+    renderEpoch(currentEpoch);
+  });
+
+  // Epoch strip bars
+  buildStrip();
+}
+
+function buildStrip() {
+  const container = document.getElementById("strip-container");
+  container.innerHTML = "";
+  const maxAbs = Math.max(...epochIndex.map(e => Math.abs(e.mean_mm || 0)), 1);
+  epochIndex.forEach((epoch, i) => {
+    const mm  = epoch.mean_mm || 0;
+    const pct = Math.max(8, Math.abs(mm) / maxAbs * 100);
+    const bar = document.createElement("div");
+    bar.className = "strip-bar";
+    bar.style.height = pct + "%";
+    bar.style.background = dispColor(mm);
+    bar.title = `${epoch.date}: ${mm != null ? mm.toFixed(1) + " mm" : "n/a"}`;
+    bar.addEventListener("click", () => {
+      document.getElementById("date-slider").value = i;
+      renderEpoch(i);
+    });
+    container.appendChild(bar);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// PLAYBACK
+// ═══════════════════════════════════════════════════════════
+function stepEpoch(delta) {
+  renderEpoch(currentEpoch + delta);
+  document.getElementById("date-slider").value = currentEpoch;
+}
+
+function togglePlay() {
+  const btn = document.getElementById("play-btn");
+  if (playTimer) {
+    clearInterval(playTimer);
+    playTimer = null;
+    btn.textContent = "▶ Play";
+  } else {
+    btn.textContent = "⏸ Pause";
+    playTimer = setInterval(() => {
+      const next = (currentEpoch + 1) % epochIndex.length;
+      document.getElementById("date-slider").value = next;
+      renderEpoch(next);
+    }, 800);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════════════════
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft")  stepEpoch(-1);
+  if (e.key === "ArrowRight") stepEpoch(1);
+  if (e.key === " ") { e.preventDefault(); togglePlay(); }
+});
+
+// ═══════════════════════════════════════════════════════════
+// GO
+// ═══════════════════════════════════════════════════════════
+boot();
+</script>
+</body>
+</html>

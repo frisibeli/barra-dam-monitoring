@@ -1,0 +1,20 @@
+{
+  "reservoir": "toshkov_chark",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.424054+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.819,
+      "outflow_m3s": 0.986,
+      "volume_mm3": 0.95,
+      "total_capacity_mm3": 1.782,
+      "pct_total": 53.33,
+      "dead_volume_mm3": 0.276,
+      "useful_volume_mm3": 0.674,
+      "pct_useful": 44.78,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.424035+00:00"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "reservoir": "kamchia",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.410676+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 6.332,
+      "outflow_m3s": 6.674,
+      "volume_mm3": 234.405,
+      "total_capacity_mm3": 233.55,
+      "pct_total": 100.37,
+      "dead_volume_mm3": 49.9,
+      "useful_volume_mm3": 184.505,
+      "pct_useful": 100.47,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.410662+00:00"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "reservoir": "ognyanova",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.411434+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.714,
+      "outflow_m3s": 1.2,
+      "volume_mm3": 24.478,
+      "total_capacity_mm3": 31.6,
+      "pct_total": 77.46,
+      "dead_volume_mm3": 2.5,
+      "useful_volume_mm3": 21.978,
+      "pct_useful": 75.53,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.411420+00:00"
+    }
+  ]
+}

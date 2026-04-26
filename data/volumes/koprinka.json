@@ -1,0 +1,20 @@
+{
+  "reservoir": "koprinka",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.423108+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 16.12,
+      "outflow_m3s": 8.365,
+      "volume_mm3": 119.259,
+      "total_capacity_mm3": 142.214,
+      "pct_total": 83.86,
+      "dead_volume_mm3": 5.41,
+      "useful_volume_mm3": 113.849,
+      "pct_useful": 83.22,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.423092+00:00"
+    }
+  ]
+}

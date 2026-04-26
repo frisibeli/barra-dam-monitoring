@@ -1,0 +1,20 @@
+{
+  "reservoir": "kula",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.411922+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.37,
+      "outflow_m3s": 0.37,
+      "volume_mm3": 11.489,
+      "total_capacity_mm3": 20.25,
+      "pct_total": 56.74,
+      "dead_volume_mm3": 0.7,
+      "useful_volume_mm3": 10.789,
+      "pct_useful": 55.19,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.411908+00:00"
+    }
+  ]
+}

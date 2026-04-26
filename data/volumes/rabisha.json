@@ -1,0 +1,20 @@
+{
+  "reservoir": "rabisha",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.412010+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.0,
+      "outflow_m3s": 0.012,
+      "volume_mm3": 10.906,
+      "total_capacity_mm3": 43.2,
+      "pct_total": 25.25,
+      "dead_volume_mm3": 2.4,
+      "useful_volume_mm3": 8.506,
+      "pct_useful": 20.85,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.411987+00:00"
+    }
+  ]
+}

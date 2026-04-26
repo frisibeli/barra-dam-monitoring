@@ -1,0 +1,20 @@
+{
+  "reservoir": "malko_sharkovo",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.422365+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.536,
+      "outflow_m3s": 0.167,
+      "volume_mm3": 38.982,
+      "total_capacity_mm3": 45.0,
+      "pct_total": 86.63,
+      "dead_volume_mm3": 3.9,
+      "useful_volume_mm3": 35.082,
+      "pct_useful": 85.36,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.422344+00:00"
+    }
+  ]
+}

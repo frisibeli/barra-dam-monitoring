@@ -1,0 +1,20 @@
+{
+  "reservoir": "trakiets",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.422719+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.116,
+      "outflow_m3s": 4.977,
+      "volume_mm3": 89.18,
+      "total_capacity_mm3": 114.0,
+      "pct_total": 78.23,
+      "dead_volume_mm3": 24.0,
+      "useful_volume_mm3": 65.18,
+      "pct_useful": 72.42,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.422702+00:00"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "reservoir": "studena",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.411082+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 1.645,
+      "outflow_m3s": 1.448,
+      "volume_mm3": 23.909,
+      "total_capacity_mm3": 25.2,
+      "pct_total": 94.88,
+      "dead_volume_mm3": 2.4,
+      "useful_volume_mm3": 21.509,
+      "pct_useful": 94.34,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.411067+00:00"
+    }
+  ]
+}

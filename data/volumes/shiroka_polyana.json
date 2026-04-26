@@ -1,0 +1,20 @@
+{
+  "reservoir": "shiroka_polyana",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.423779+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.0,
+      "outflow_m3s": 0.0,
+      "volume_mm3": 18.99,
+      "total_capacity_mm3": 23.98,
+      "pct_total": 79.19,
+      "dead_volume_mm3": 3.3,
+      "useful_volume_mm3": 15.69,
+      "pct_useful": 75.87,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.423707+00:00"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "reservoir": "ivaylovgrad",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.424876+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 110.961,
+      "outflow_m3s": 131.17,
+      "volume_mm3": 111.687,
+      "total_capacity_mm3": 156.702,
+      "pct_total": 71.27,
+      "dead_volume_mm3": 59.526,
+      "useful_volume_mm3": 52.161,
+      "pct_useful": 53.68,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.424863+00:00"
+    }
+  ]
+}

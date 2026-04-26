@@ -1,0 +1,20 @@
+{
+  "reservoir": "georgi_traikov",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.422073+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 8.368,
+      "outflow_m3s": 1.505,
+      "volume_mm3": 212.072,
+      "total_capacity_mm3": 330.0,
+      "pct_total": 64.26,
+      "dead_volume_mm3": 21.0,
+      "useful_volume_mm3": 191.072,
+      "pct_useful": 61.84,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.422055+00:00"
+    }
+  ]
+}

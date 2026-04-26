@@ -1,0 +1,20 @@
+{
+  "reservoir": "srechenska_bara",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.410185+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.509,
+      "outflow_m3s": 0.509,
+      "volume_mm3": 15.2,
+      "total_capacity_mm3": 15.5,
+      "pct_total": 98.06,
+      "dead_volume_mm3": 1.0,
+      "useful_volume_mm3": 14.2,
+      "pct_useful": 97.93,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.410157+00:00"
+    }
+  ]
+}

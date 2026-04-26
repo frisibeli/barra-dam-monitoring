@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Огоста Reservoir — МОСВ Bulletin Data</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+  :root {
+    --bg:      #0f1117;
+    --surface: #1a1d29;
+    --card:    #21242f;
+    --accent:  #3b82f6;
+    --water:   #2196F3;
+    --inflow:  #4CAF50;
+    --outflow: #ef4444;
+    --dead:    #6b7280;
+    --text:    #e2e8f0;
+    --muted:   #94a3b8;
+    --border:  #2d3348;
+    --radius:  10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-left h1 { font-size: 18px; font-weight: 700; }
+  .header-left .subtitle { font-size: 12px; color: var(--muted); }
+  .header-right { display: flex; gap: 8px; align-items: center; }
+  .header-right select, .header-right button {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .header-right button:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* ── KPI Cards ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    padding: 16px 24px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .kpi .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .kpi .value { font-size: 26px; font-weight: 700; }
+  .kpi .unit  { font-size: 13px; color: var(--muted); margin-left: 4px; }
+  .kpi .delta { font-size: 12px; margin-top: 4px; }
+  .kpi .delta.up   { color: var(--inflow); }
+  .kpi .delta.down { color: var(--outflow); }
+  .kpi .delta.flat { color: var(--muted); }
+
+  /* ── Charts ── */
+  .charts {
+    padding: 0 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .chart-card h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--muted);
+  }
+  .chart-container { position: relative; width: 100%; }
+  .chart-container.main-chart { height: 340px; }
+  .chart-container.half { height: 260px; }
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* ── Table ── */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 0 24px 24px;
+    overflow: hidden;
+  }
+  .table-card h2 {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 16px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .table-wrap { max-height: 400px; overflow-y: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    position: sticky; top: 0;
+    background: var(--card);
+    padding: 8px 12px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  thead th:first-child { text-align: left; }
+  tbody td {
+    padding: 7px 12px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td:first-child { text-align: left; color: var(--accent); }
+  tbody tr:hover { background: rgba(59,130,246,0.06); }
+
+  /* ── Loading / error ── */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    font-size: 16px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 800px) {
+    .chart-row { grid-template-columns: 1fr; }
+    .kpi-row   { grid-template-columns: repeat(2, 1fr); }
+    header     { padding: 12px 16px; }
+    .charts, .kpi-row { padding-left: 16px; padding-right: 16px; }
+    .table-card { margin-left: 16px; margin-right: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div>
+      <h1>💧 Огоста Reservoir</h1>
+      <div class="subtitle">МОСВ Daily Water Bulletin Data</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <select id="rangeSelect">
+      <option value="90">Last 90 days</option>
+      <option value="180">Last 180 days</option>
+      <option value="365" selected>Last year</option>
+      <option value="all">All data</option>
+    </select>
+  </div>
+</header>
+
+<div id="app" class="loading">Loading data…</div>
+
+<script>
+const DATA_URL = 'data/ogosta_volumes.json';
+
+let allReadings = [];
+let charts = {};
+
+async function loadData() {
+  const resp = await fetch(DATA_URL);
+  if (!resp.ok) throw new Error(`Failed to load data: ${resp.status}`);
+  const data = await resp.json();
+  allReadings = data.readings.filter(r => r.volume_mm3 != null);
+  allReadings.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function filterByRange(readings, days) {
+  if (days === 'all' || !readings.length) return readings;
+  const latestDate = new Date(readings[readings.length - 1].date + 'T00:00:00');
+  const cutoff = new Date(latestDate);
+  cutoff.setDate(cutoff.getDate() - parseInt(days));
+  const cutoffStr = cutoff.toISOString().slice(0, 10);
+  return readings.filter(r => r.date >= cutoffStr);
+}
+
+function buildKPIs(readings) {
+  const latest = readings[readings.length - 1];
+  const prev = readings.length > 1 ? readings[readings.length - 2] : null;
+  const oldest = readings[0];
+
+  const volDelta = prev ? latest.volume_mm3 - prev.volume_mm3 : 0;
+  const volDeltaClass = volDelta > 0.01 ? 'up' : volDelta < -0.01 ? 'down' : 'flat';
+  const volDeltaSign = volDelta > 0 ? '+' : '';
+
+  const rangeDelta = latest.volume_mm3 - oldest.volume_mm3;
+  const rangeDeltaClass = rangeDelta > 0.01 ? 'up' : rangeDelta < -0.01 ? 'down' : 'flat';
+  const rangeDeltaSign = rangeDelta > 0 ? '+' : '';
+
+  return `
+    <div class="kpi">
+      <div class="label">Current Volume</div>
+      <div class="value">${latest.volume_mm3.toFixed(1)}<span class="unit">млн.м³</span></div>
+      <div class="delta ${volDeltaClass}">${volDeltaSign}${volDelta.toFixed(2)} vs prev day</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Capacity Used</div>
+      <div class="value">${latest.pct_total.toFixed(1)}<span class="unit">%</span></div>
+      <div class="delta flat">of ${latest.total_capacity_mm3} млн.м³ total</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Useful Volume</div>
+      <div class="value">${latest.useful_volume_mm3.toFixed(1)}<span class="unit">млн.м³</span></div>
+      <div class="delta flat">${latest.pct_useful.toFixed(1)}% of useful capacity</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Inflow</div>
+      <div class="value">${latest.inflow_m3s.toFixed(2)}<span class="unit">м³/с</span></div>
+      <div class="delta flat">latest reading</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Outflow</div>
+      <div class="value">${latest.outflow_m3s.toFixed(2)}<span class="unit">м³/с</span></div>
+      <div class="delta flat">latest reading</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Period Change</div>
+      <div class="value">${rangeDeltaSign}${rangeDelta.toFixed(1)}<span class="unit">млн.м³</span></div>
+      <div class="delta ${rangeDeltaClass}">${oldest.date} → ${latest.date}</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Latest Bulletin</div>
+      <div class="value" style="font-size:18px">${latest.date}</div>
+      <div class="delta flat">${readings.length} readings in range</div>
+    </div>
+  `;
+}
+
+function chartDefaults() {
+  Chart.defaults.color = '#94a3b8';
+  Chart.defaults.borderColor = '#2d3348';
+  Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+  Chart.defaults.font.size = 11;
+}
+
+function destroyCharts() {
+  Object.values(charts).forEach(c => c.destroy());
+  charts = {};
+}
+
+function createVolumeChart(ctx, readings) {
+  const dates = readings.map(r => r.date);
+  const volumes = readings.map(r => r.volume_mm3);
+  const deadVol = readings[0]?.dead_volume_mm3 || 67;
+  const totalCap = readings[0]?.total_capacity_mm3 || 506;
+
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [
+        {
+          label: 'Current Volume (млн.м³)',
+          data: volumes,
+          borderColor: '#2196F3',
+          backgroundColor: 'rgba(33,150,243,0.12)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 0,
+          pointHitRadius: 6,
+          borderWidth: 2,
+        },
+        {
+          label: 'Total Capacity',
+          data: dates.map(() => totalCap),
+          borderColor: 'rgba(148,163,184,0.3)',
+          borderDash: [6, 4],
+          pointRadius: 0,
+          borderWidth: 1,
+          fill: false,
+        },
+        {
+          label: 'Dead Volume',
+          data: dates.map(() => deadVol),
+          borderColor: 'rgba(239,68,68,0.3)',
+          borderDash: [4, 4],
+          pointRadius: 0,
+          borderWidth: 1,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          type: 'time',
+          time: { unit: readings.length > 400 ? 'month' : 'week', tooltipFormat: 'yyyy-MM-dd' },
+          grid: { display: false },
+        },
+        y: {
+          title: { display: true, text: 'млн.м³' },
+          min: 0,
+          max: totalCap * 1.05,
+        },
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} млн.м³`,
+          },
+        },
+      },
+    },
+  });
+}
+
+function createPercentChart(ctx, readings) {
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: readings.map(r => r.date),
+      datasets: [
+        {
+          label: '% of Total Capacity',
+          data: readings.map(r => r.pct_total),
+          borderColor: '#8b5cf6',
+          backgroundColor: 'rgba(139,92,246,0.1)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 0,
+          borderWidth: 2,
+        },
+        {
+          label: '% of Useful Capacity',
+          data: readings.map(r => r.pct_useful),
+          borderColor: '#06b6d4',
+          backgroundColor: 'rgba(6,182,212,0.08)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 0,
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          type: 'time',
+          time: { unit: readings.length > 400 ? 'month' : 'week', tooltipFormat: 'yyyy-MM-dd' },
+          grid: { display: false },
+        },
+        y: {
+          title: { display: true, text: '%' },
+          min: 0,
+          max: 100,
+        },
+      },
+    },
+  });
+}
+
+function createFlowChart(ctx, readings) {
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: readings.map(r => r.date),
+      datasets: [
+        {
+          label: 'Inflow (м³/с)',
+          data: readings.map(r => r.inflow_m3s),
+          borderColor: '#4CAF50',
+          backgroundColor: 'rgba(76,175,80,0.08)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 0,
+          borderWidth: 1.5,
+        },
+        {
+          label: 'Outflow (м³/с)',
+          data: readings.map(r => r.outflow_m3s),
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239,68,68,0.08)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 0,
+          borderWidth: 1.5,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          type: 'time',
+          time: { unit: readings.length > 400 ? 'month' : 'week', tooltipFormat: 'yyyy-MM-dd' },
+          grid: { display: false },
+        },
+        y: {
+          title: { display: true, text: 'м³/с' },
+          min: 0,
+        },
+      },
+    },
+  });
+}
+
+function createNetFlowChart(ctx, readings) {
+  const netFlow = readings.map(r => r.inflow_m3s - r.outflow_m3s);
+  const colors = netFlow.map(v => v >= 0 ? 'rgba(76,175,80,0.7)' : 'rgba(239,68,68,0.7)');
+
+  return new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: readings.map(r => r.date),
+      datasets: [{
+        label: 'Net Flow (м³/с)',
+        data: netFlow,
+        backgroundColor: colors,
+        borderWidth: 0,
+        barPercentage: 1.0,
+        categoryPercentage: 1.0,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          type: 'time',
+          time: { unit: readings.length > 400 ? 'month' : 'week', tooltipFormat: 'yyyy-MM-dd' },
+          grid: { display: false },
+        },
+        y: {
+          title: { display: true, text: 'м³/с (inflow − outflow)' },
+        },
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const v = ctx.parsed.y;
+              return `Net: ${v >= 0 ? '+' : ''}${v.toFixed(2)} м³/с (${v >= 0 ? 'filling' : 'draining'})`;
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+function buildTable(readings) {
+  const reversed = [...readings].reverse();
+  const rows = reversed.map(r => {
+    const net = r.inflow_m3s - r.outflow_m3s;
+    const netClass = net > 0.01 ? 'up' : net < -0.01 ? 'down' : 'flat';
+    const netSign = net > 0 ? '+' : '';
+    return `<tr>
+      <td>${r.date}</td>
+      <td>${r.volume_mm3.toFixed(2)}</td>
+      <td>${r.pct_total.toFixed(1)}%</td>
+      <td>${r.useful_volume_mm3.toFixed(2)}</td>
+      <td>${r.inflow_m3s.toFixed(3)}</td>
+      <td>${r.outflow_m3s.toFixed(3)}</td>
+      <td class="delta ${netClass}">${netSign}${net.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <table>
+      <thead><tr>
+        <th style="text-align:left">Date</th>
+        <th>Volume (млн.м³)</th>
+        <th>% Capacity</th>
+        <th>Useful (млн.м³)</th>
+        <th>Inflow (м³/с)</th>
+        <th>Outflow (м³/с)</th>
+        <th>Net Flow</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function render(rangeDays) {
+  const readings = filterByRange(allReadings, rangeDays);
+  const app = document.getElementById('app');
+  if (!readings.length) {
+    app.innerHTML = '<div class="loading">No data in selected range</div>';
+    return;
+  }
+
+  destroyCharts();
+
+  app.classList.remove('loading');
+  app.innerHTML = `
+    <div class="kpi-row">${buildKPIs(readings)}</div>
+    <div class="charts">
+      <div class="chart-card">
+        <h2>Reservoir Volume Over Time</h2>
+        <div class="chart-container main-chart"><canvas id="volumeChart"></canvas></div>
+      </div>
+      <div class="chart-row">
+        <div class="chart-card">
+          <h2>Capacity Percentage</h2>
+          <div class="chart-container half"><canvas id="pctChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h2>Inflow vs Outflow</h2>
+          <div class="chart-container half"><canvas id="flowChart"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h2>Net Flow (Inflow − Outflow)</h2>
+        <div class="chart-container half"><canvas id="netFlowChart"></canvas></div>
+      </div>
+    </div>
+    <div class="table-card">
+      <h2>Readings (newest first)</h2>
+      <div class="table-wrap">${buildTable(readings)}</div>
+    </div>
+  `;
+
+  charts.volume  = createVolumeChart(document.getElementById('volumeChart'), readings);
+  charts.pct     = createPercentChart(document.getElementById('pctChart'), readings);
+  charts.flow    = createFlowChart(document.getElementById('flowChart'), readings);
+  charts.netFlow = createNetFlowChart(document.getElementById('netFlowChart'), readings);
+}
+
+async function init() {
+  chartDefaults();
+  try {
+    await loadData();
+    const sel = document.getElementById('rangeSelect');
+    render(sel.value);
+    sel.addEventListener('change', () => render(sel.value));
+  } catch (e) {
+    document.getElementById('app').innerHTML =
+      `<div class="loading" style="color:#ef4444">Error: ${e.message}</div>`;
+    console.error(e);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

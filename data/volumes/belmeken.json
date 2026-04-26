@@ -1,0 +1,20 @@
+{
+  "reservoir": "belmeken",
+  "source": "mosv_bulletin",
+  "generated": "2026-04-25T21:00:15.423191+00:00",
+  "readings": [
+    {
+      "date": "2026-04-23",
+      "inflow_m3s": 0.0,
+      "outflow_m3s": 0.0,
+      "volume_mm3": 72.662,
+      "total_capacity_mm3": 144.036,
+      "pct_total": 50.45,
+      "dead_volume_mm3": 3.81,
+      "useful_volume_mm3": 68.852,
+      "pct_useful": 49.1,
+      "bulletin_ext": "doc",
+      "fetched_at": "2026-04-25T21:00:15.423176+00:00"
+    }
+  ]
+}
