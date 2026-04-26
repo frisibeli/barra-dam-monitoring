@@ -7,7 +7,7 @@ import json
 from datetime import date, timedelta
 from urllib.parse import urlparse
 
-PORT = 8080
+PORT = 80
 _BASE = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_BASE)
 sys.path.insert(0, _BASE)
@@ -126,8 +126,8 @@ class DamMonitorHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     DamMonitorHandler.load_model()
-    with socketserver.TCPServer(("", PORT), DamMonitorHandler) as httpd:
-        httpd.allow_reuse_address = True
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
+    with socketserver.ThreadingTCPServer(("", PORT), DamMonitorHandler) as httpd:
         print(f"Serving at http://localhost:{PORT}", flush=True)
         webbrowser.open(f"http://localhost:{PORT}/dam_flood_simulator.html")
         httpd.serve_forever()
