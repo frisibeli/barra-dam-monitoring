@@ -6,6 +6,18 @@ Usage:
 
 Or directly:
     gunicorn -w 2 -b 0.0.0.0:80 --preload serve_gunicorn:app
+
+Routes:
+    GET  /                    → viewer_dams_map.html  (index)
+    GET  /viewer.html         → Dam Water Monitor
+    GET  /viewer_snow.html    → Snow Monitor
+    GET  /viewer_ogosta.html  → Ogosta Monitoring Hub
+    GET  /viewer_mosv.html    → МОСВ Bulletin Data
+    GET  /viewer_insar.html   → InSAR Deformation Viewer
+    GET  /dam_flood_simulator.html → Flood Simulator
+    GET  /data/**             → static data files
+    GET  /api/forecast        → 7-day inflow forecast (JSON)
+    POST /api/predict         → custom-scenario forecast (JSON)
 """
 import os
 import sys
@@ -109,7 +121,7 @@ def _handle_predict(environ, start_response):
 # ── Static file handler ───────────────────────────────────────────────
 
 def _serve_static(environ, start_response, path):
-    safe = os.path.normpath(path.lstrip("/") or "dam_flood_simulator.html")
+    safe = os.path.normpath(path.lstrip("/") or "viewer_dams_map.html")
     full = os.path.join(_BASE, safe)
 
     # Prevent directory traversal
@@ -118,7 +130,7 @@ def _serve_static(environ, start_response, path):
         return [b"Forbidden"]
 
     if os.path.isdir(full):
-        full = os.path.join(full, "dam_flood_simulator.html")
+        full = os.path.join(full, "viewer_dams_map.html")
 
     if not os.path.isfile(full):
         start_response("404 Not Found", [("Content-Type", "text/plain")])
