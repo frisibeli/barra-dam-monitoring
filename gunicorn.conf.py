@@ -4,6 +4,7 @@ import multiprocessing
 
 # Binding
 bind = "0.0.0.0:80"
+reuse_port = True   # SO_REUSEPORT — avoids TIME_WAIT bind failures on restart
 
 # Workers: 2 sync workers is enough for this app.
 # Increase to 4 if you have ≥4 CPU cores.
